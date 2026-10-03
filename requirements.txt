@@ -1,0 +1,29 @@
+# Direct dependencies only. Pin each to an exact version after the first
+# successful run on Kaggle (§2.3), then commit the full `pip freeze` as
+# requirements-full.txt for exact reproduction.
+#
+#   python -m pip freeze > requirements-full.txt
+#
+# Recorded Python version: <fill from sys.version on day 1>
+
+torch
+transformers
+datasets
+accelerate
+tokenizers
+
+# CamemBERT and XLM-R are SentencePiece-based. Missing either of these gives a
+# confusing mid-notebook ImportError during tokenizer conversion (§2.2).
+sentencepiece
+protobuf
+
+# Metrics come from scikit-learn, not `evaluate`: `evaluate` downloads metric
+# scripts from the Hub at call time, which puts a network dependency inside
+# the eval loop and breaks offline and inside a Space.
+scikit-learn
+numpy
+pandas
+matplotlib
+
+wandb
+pytest

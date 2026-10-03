@@ -1,0 +1,27 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# Model artifacts live on the HF Hub, not in git (§2.5)
+*.bin
+*.safetensors
+*.pt
+*.onnx
+checkpoints/
+outputs/
+runs/
+wandb/
+
+# Credentials: the HF write token belongs in a Kaggle/Colab Secret
+.env
+*.key
+
+.DS_Store
+Thumbs.db
+
+# NOTE: notebook outputs are deliberately NOT stripped (§2.5). GitHub renders
+# executed notebooks, so a reader sees the figures without running anything.
+# Do not add nbstripout.

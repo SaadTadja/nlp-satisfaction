@@ -1,0 +1,12 @@
+{
+  "model_repo": null,
+  "revision": null,
+  "labels": ["négatif", "positif"],
+  "max_length": null,
+  "normalize_version": "v1",
+  "temperature": null,
+  "theta_lo": null,
+  "theta_hi": null,
+  "tpr": null,
+  "fpr": null
+}
