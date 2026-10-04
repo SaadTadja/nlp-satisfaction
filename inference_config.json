@@ -1,15 +1,16 @@
 {
-  "model_repo": null,
-  "revision": null,
+  "model_repo": "D:\\NLP Analyse de sentiment\\data\\model_tfidf.joblib",
+  "revision": "local-tfidf-v1",
   "labels": [
     "négatif",
     "positif"
   ],
   "max_length": 288,
   "normalize_version": "v1",
-  "temperature": null,
-  "theta_lo": null,
-  "theta_hi": null,
-  "tpr": null,
-  "fpr": null
+  "temperature": 0.6268,
+  "theta_lo": 0.257,
+  "theta_hi": 0.7093,
+  "tpr": 0.9631,
+  "fpr": 0.0426,
+  "backend": "sklearn"
 }

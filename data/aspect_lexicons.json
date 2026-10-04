@@ -1,0 +1,80 @@
+{
+  "scénario": [
+    "debut",
+    "début",
+    "fin",
+    "histoire",
+    "intrigue",
+    "recit",
+    "récit",
+    "scenario",
+    "script",
+    "scénario"
+  ],
+  "jeu_acteurs": [
+    "acteur",
+    "acteurs",
+    "actrice",
+    "actrices",
+    "casting",
+    "interpretation",
+    "interprétation",
+    "jeu",
+    "personnage",
+    "personnages",
+    "role",
+    "rôle"
+  ],
+  "réalisation": [
+    "camera",
+    "caméra",
+    "mise",
+    "montage",
+    "plans",
+    "realisateur",
+    "realisation",
+    "rythme",
+    "réalisateur",
+    "réalisation",
+    "scene",
+    "scène"
+  ],
+  "image_son": [
+    "bande",
+    "decors",
+    "décors",
+    "effets",
+    "image",
+    "images",
+    "musique",
+    "photographie",
+    "son",
+    "speciaux",
+    "spéciaux"
+  ],
+  "émotion": [
+    "drole",
+    "drôle",
+    "emotion",
+    "emouvant",
+    "ennui",
+    "ennuyeux",
+    "peur",
+    "rire",
+    "touchant",
+    "émotion",
+    "émouvant"
+  ],
+  "originalité": [
+    "banal",
+    "classique",
+    "cliche",
+    "cliché",
+    "deja",
+    "déjà",
+    "original",
+    "originale",
+    "originalite",
+    "originalité"
+  ]
+}

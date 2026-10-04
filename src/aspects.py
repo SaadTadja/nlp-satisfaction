@@ -30,8 +30,10 @@ No torch dependency: pure Python so it is testable without a model.
 
 from __future__ import annotations
 
+import json
 import re
 from collections import Counter
+from pathlib import Path
 
 __all__ = [
     "ASPECT_LEXICONS",
@@ -39,7 +41,11 @@ __all__ = [
     "detect_aspects",
     "attribute_sentences",
     "suggest_lexicon_terms",
+    "save_lexicons",
+    "load_lexicons",
 ]
+
+LEXICON_PATH = Path(__file__).resolve().parents[1] / "data" / "aspect_lexicons.json"
 
 # Starter lexicons. §11 step 1 says to REBUILD these from the most frequent
 # nouns in your own negative reviews -- `suggest_lexicon_terms` below helps.
@@ -116,6 +122,36 @@ def attribute_sentences(
     reporting (see the limitations above).
     """
     return [(s, detect_aspects(s, lexicons)) for s in split_sentences(text)]
+
+
+def save_lexicons(lexicons: dict[str, set[str]], path: str | Path | None = None) -> Path:
+    """Persist corpus-derived lexicons so the demo uses the same ones as the
+    analysis notebook.
+
+    Without this, ``app.py`` would silently fall back to the generic starter
+    lexicons while the published aspect table came from the derived ones --
+    the same eval/serve drift §3.1 exists to prevent, one level down.
+    """
+    path = LEXICON_PATH if path is None else Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    payload = {k: sorted(v) for k, v in lexicons.items()}
+    path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n",
+                    encoding="utf-8")
+    return path
+
+
+def load_lexicons(path: str | Path | None = None) -> dict[str, set[str]]:
+    """Load corpus-derived lexicons, falling back to the starter set.
+
+    The fallback is deliberate rather than an error: the starter lexicons are
+    a usable default for product feedback, and a missing file just means
+    notebook 07 has not been run for this corpus yet.
+    """
+    path = LEXICON_PATH if path is None else Path(path)
+    if not Path(path).exists():
+        return ASPECT_LEXICONS
+    raw = json.loads(Path(path).read_text(encoding="utf-8"))
+    return {k: set(v) for k, v in raw.items()}
 
 
 def suggest_lexicon_terms(

@@ -1,0 +1,10 @@
+{
+  "temperature": 0.6268,
+  "ece_before": 0.0545,
+  "ece_after": 0.0077,
+  "theta_lo": 0.257,
+  "theta_hi": 0.7093,
+  "abstain_rate": 0.1,
+  "acc_outside_band": 0.961,
+  "acc_inside_band": 0.631
+}

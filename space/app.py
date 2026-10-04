@@ -27,7 +27,7 @@ import pandas as pd
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
 
-from src.aspects import ASPECT_LEXICONS, attribute_sentences  # noqa: E402
+from src.aspects import attribute_sentences, load_lexicons  # noqa: E402
 from src.estimate import acc_prevalence  # noqa: E402
 from src.normalize import is_empty  # noqa: E402
 from src.predict import POSITIVE, SatisfactionModel, load_config  # noqa: E402
@@ -35,10 +35,14 @@ from src.predict import POSITIVE, SatisfactionModel, load_config  # noqa: E402
 MAX_ROWS = 5_000  # cap so a free CPU Space cannot be wedged
 
 # --------------------------------------------------------------------------
-# Load once, at import
+# Load once, at import (§3.4 -- never per request)
 # --------------------------------------------------------------------------
 LOAD_ERROR: str | None = None
 MODEL: SatisfactionModel | None = None
+CFG = None
+# Corpus-derived lexicons from notebook 07, so the demo's aspect table matches
+# the published one. Falls back to the generic starter set if absent.
+LEXICONS = load_lexicons()
 try:
     CFG = load_config(REPO / "inference_config.json")
     MODEL = SatisfactionModel(CFG, quantize=True)
@@ -157,11 +161,12 @@ def analyse_batch(file):
 
     # Per-aspect sentiment, corrected the same way (§11 step 4).
     rows = []
-    for aspect in ASPECT_LEXICONS:
-        sents = [s for t in texts for s, asp in attribute_sentences(t) if aspect in asp]
+    for aspect in LEXICONS:
+        sents = [s for t in texts
+                 for s, asp in attribute_sentences(t, LEXICONS) if aspect in asp]
         if len(sents) < 5:
             continue
-        sp = [p for p in MODEL.predict(sents, batch_size=32) if p.confident]
+        sp = [p for p in MODEL.predict(sents, batch_size=64) if p.confident]
         if not sp:
             continue
         raw = sum(p.label == POSITIVE for p in sp) / len(sp)
@@ -215,10 +220,10 @@ with gr.Blocks(title="Analyse de satisfaction client (FR)") as demo:
         t_btn.click(analyse_one, t_in, [t_scores, t_notes])
         gr.Examples(
             [
-                "Produit conforme à la description, livraison rapide. Très satisfait.",
-                "Le produit est super mais la livraison a été catastrophique.",
-                "Reçu hier, je n'ai pas encore eu le temps de l'essayer.",
-                "Service client injoignable depuis trois semaines. Scandaleux.",
+                "Un très beau film, touchant, porté par un duo d'acteurs remarquable.",
+                "Le jeu des acteurs est excellent, mais le scénario est creux.",
+                "Je l'ai vu hier soir, je ne sais pas encore quoi en penser.",
+                "Scénario incohérent, dialogues ridicules. Une perte de temps.",
             ],
             t_in,
         )

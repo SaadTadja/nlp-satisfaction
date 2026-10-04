@@ -144,3 +144,56 @@ def test_rejects_stale_normalize_version(tmp_path):
     not silently pair with current code."""
     with pytest.raises(ValueError, match="normalize"):
         load_config(write_config(tmp_path, normalize_version="v0-stale"))
+
+
+def test_rejects_unknown_backend(tmp_path):
+    with pytest.raises(ValueError, match="unknown backend"):
+        load_config(write_config(tmp_path, backend="magic"))
+
+
+# --------------------------------------------------------------------------
+# The notebook-06 bootstrap: predict before tpr/fpr exist
+# --------------------------------------------------------------------------
+
+
+def test_partial_config_loads_without_rates(tmp_path):
+    """Notebook 06 must run predictions in order to MEASURE tpr/fpr, so it
+    cannot be required to supply them first."""
+    cfg = load_config(
+        write_config(tmp_path, tpr=None, fpr=None), require_aggregation=False
+    )
+    assert cfg.aggregation_ready is False
+    assert cfg.temperature == 1.74          # prediction fields still enforced
+
+
+def test_partial_config_still_requires_prediction_fields(tmp_path):
+    with pytest.raises(ValueError, match="04_calibration"):
+        load_config(
+            write_config(tmp_path, temperature=None, tpr=None, fpr=None),
+            require_aggregation=False,
+        )
+
+
+def test_partial_config_refuses_to_aggregate(tmp_path):
+    """A half-built config must not silently produce a satisfaction rate."""
+    from src.predict import SatisfactionModel
+
+    cfg = load_config(
+        write_config(tmp_path, tpr=None, fpr=None), require_aggregation=False
+    )
+
+    class StubBackend:
+        def logits(self, texts, max_length):
+            return np.zeros((len(texts), 2))
+
+        def token_lengths(self, texts):
+            return [0] * len(texts)
+
+    model = SatisfactionModel(cfg, backend=StubBackend())
+    model.predict(["ça marche"])            # prediction is fine
+    with pytest.raises(ValueError, match="06_aggregate"):
+        model.estimate_satisfaction(["ça marche"])
+
+
+def test_full_config_is_aggregation_ready(tmp_path):
+    assert load_config(write_config(tmp_path)).aggregation_ready is True

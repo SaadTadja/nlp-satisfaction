@@ -1,0 +1,47 @@
+{
+  "unattributed_rate": 0.5989,
+  "aspects": [
+    {
+      "aspect": "scénario",
+      "phrases": 2511,
+      "jugées": 2044,
+      "brut": 0.3684,
+      "corrigé": 0.3539
+    },
+    {
+      "aspect": "originalité",
+      "phrases": 755,
+      "jugées": 597,
+      "brut": 0.3819,
+      "corrigé": 0.3686
+    },
+    {
+      "aspect": "réalisation",
+      "phrases": 1652,
+      "jugées": 1282,
+      "brut": 0.4126,
+      "corrigé": 0.402
+    },
+    {
+      "aspect": "émotion",
+      "phrases": 946,
+      "jugées": 806,
+      "brut": 0.4218,
+      "corrigé": 0.412
+    },
+    {
+      "aspect": "image_son",
+      "phrases": 2316,
+      "jugées": 1767,
+      "brut": 0.5144,
+      "corrigé": 0.5126
+    },
+    {
+      "aspect": "jeu_acteurs",
+      "phrases": 2550,
+      "jugées": 2040,
+      "brut": 0.5152,
+      "corrigé": 0.5134
+    }
+  ]
+}
