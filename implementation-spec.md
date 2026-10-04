@@ -287,9 +287,11 @@ No database (nothing to persist) · no auth (public demo) · no request queue (G
 
 ### 4.1 Confirm the dataset and its construction
 
-**Primary: `allocine`** on Hugging Face — ~200k real French reviews (160k/20k/20k), binary sentiment. Genuinely human-written French, real labels, no machine translation. This is what makes the pivot worthwhile.
+**Primary: `tblard/allocine`** on Hugging Face — 200k real French reviews (160k/20k/20k), binary sentiment. Genuinely human-written French, real labels, no machine translation. This is what makes the pivot worthwhile.
 
-**Verify availability and shape on day 1** rather than trusting this document — Hub datasets move and get deprecated. If `allocine` is unavailable, `cardiffnlp/tweet_sentiment_multilingual` (French config, 3-class) is a smaller fallback, and the spec survives with a smaller `n`.
+> ✅ **Verified 2026-10-03.** Splits and columns are as stated; columns are `review` and `label`. Note the **namespace is required**: the bare id `allocine` now raises `HfUriError: Repository id must be 'namespace/name'` on current `huggingface_hub`. Older tutorials and the book-era code use the bare name.
+
+**Verify shape yourself on day 1** rather than trusting this document — Hub datasets move. If it becomes unavailable, `cardiffnlp/tweet_sentiment_multilingual` (French config, 3-class) is a smaller fallback and the spec survives with a smaller `n`.
 
 **The finding to look for: the polarity hole.** Review datasets built from star ratings are usually constructed by taking high ratings as positive, low as negative, and **discarding the middle**. Check it:
 
@@ -300,6 +302,12 @@ ds = load_dataset("allocine")
 ```
 
 If the middle was dropped, then **neutral text is out-of-distribution by construction** — your training data has a hole exactly where real client feedback is densest. That is not a flaw you can train away, it is a property of the data, and it is the direct justification for the neutral band in §9.2 and for the domain-shift test in §6. Write it in the README.
+
+> ✅ **Checked 2026-10-03 — and the prediction above was wrong, usefully.** The hole is in the **ratings**, not in the **language**. Both classes are full of measured, mixed writing (*"Exercice de style intéressant mais fastidieux"* → label 0; *"Très bonne comédie […] une légère perte de rythme"* → label 1). Middle star ratings were likely dropped at construction; middle *language* was not, because a reviewer can rate 4/5 and still write a largely critical paragraph.
+>
+> **This is better news than feared.** The risk was a model that never sees lukewarm text and is therefore *confidently wrong* on it — in which case a probability-threshold band cannot help, and §9.2 would have needed rethinking. Instead lukewarm text is present but arbitrarily assigned to a side, so the model should be genuinely *uncertain* near the boundary. That is exactly the condition the neutral band requires.
+>
+> **Added to §9.2's acceptance criteria:** verify it, don't assume it. Check that low-confidence validation items are in fact the mixed ones before trusting the band.
 
 ### 4.2 Duplicate leakage
 
@@ -339,7 +347,13 @@ lens = [len(tok(t).input_ids) for t in ds["train"]["review"][:5000]]
 print(np.percentile(lens, [50, 90, 95, 99]))
 ```
 
-**Do this.** Subsample **40k train rows** (stratified), set `max_length` near p90 — likely 192 — with `DataCollatorWithPadding`. Binary sentiment saturates fast; 40k gets you within a point or so of the full set at a quarter of the cost. Budget: ~6 min/epoch, so 3 seeds × 2 models ≈ 70 minutes total.
+**Do this.** Subsample **40k train rows** (stratified), set `max_length` near p90 with `DataCollatorWithPadding`.
+
+> ✅ **Measured 2026-10-03.** p50 **91**, p90 **285**, p99 454, max 518 tokens → **`max_length = 288`**, truncating 9.8% of reviews. That is 50% higher than the 192 guessed here, so budget accordingly — though with dynamic padding most batches sit near p50, not p90.
+>
+> Two consequences worth carrying: one review exceeds CamemBERT's 512-token limit, and **review sentiment often lands in the final sentence**, so a 9.8% truncation rate is not a neutral loss. Put it in the limitations.
+>
+> The subsample is not free either: TF-IDF scores **0.9238** on 40k vs **0.9372** on the full 160k — a **1.3-point** cost. Transformers are more sample-efficient so expect less, but quantify it with the single end-of-project 160k run rather than assuming.
 
 **Run the full 160k once, at the end, for the final CamemBERT only**, and report both. "40k reaches X, 160k reaches X+0.4" is a useful data-efficiency note that costs one run.
 

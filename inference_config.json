@@ -1,8 +1,11 @@
 {
   "model_repo": null,
   "revision": null,
-  "labels": ["négatif", "positif"],
-  "max_length": null,
+  "labels": [
+    "négatif",
+    "positif"
+  ],
+  "max_length": 288,
   "normalize_version": "v1",
   "temperature": null,
   "theta_lo": null,
