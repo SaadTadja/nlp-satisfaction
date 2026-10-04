@@ -1,0 +1,801 @@
+<title>Satisfaction Pipeline Architecture</title>
+
+<style>
+  :root {
+    --paper:     #F5F7F6;
+    --surface:   #FFFFFF;
+    --sunk:      #EDF1EF;
+    --ink:       #15202A;
+    --ink-soft:  #566269;
+    --rule:      #D3DAD8;
+    --rule-firm: #B4BFBC;
+    --signal:    #0E6B59;
+    --warn:      #A8442C;
+    --accent:    #1F5673;
+
+    --display: ui-serif, "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    --body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+
+    --measure: 68ch;
+    --wide: 1060px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper:     #0F1518;
+      --surface:   #161E22;
+      --sunk:      #121A1D;
+      --ink:       #E6ECEA;
+      --ink-soft:  #94A3A4;
+      --rule:      #2A363A;
+      --rule-firm: #3D4C51;
+      --signal:    #4FBFA4;
+      --warn:      #E0836A;
+      --accent:    #74A9C7;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --paper:     #0F1518;
+    --surface:   #161E22;
+    --sunk:      #121A1D;
+    --ink:       #E6ECEA;
+    --ink-soft:  #94A3A4;
+    --rule:      #2A363A;
+    --rule-firm: #3D4C51;
+    --signal:    #4FBFA4;
+    --warn:      #E0836A;
+    --accent:    #74A9C7;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 16.5px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: var(--wide);
+    margin: 0 auto;
+    padding: 0 28px 120px;
+  }
+
+  /* ---------- masthead ---------- */
+  header.masthead {
+    padding: 72px 0 40px;
+    border-bottom: 2px solid var(--ink);
+  }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: 0 0 18px;
+  }
+  h1 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: clamp(2.3rem, 5.4vw, 3.6rem);
+    line-height: 1.06;
+    letter-spacing: -0.02em;
+    margin: 0 0 20px;
+    text-wrap: balance;
+  }
+  .standfirst {
+    font-family: var(--display);
+    font-size: clamp(1.05rem, 2vw, 1.3rem);
+    line-height: 1.5;
+    color: var(--ink-soft);
+    max-width: 58ch;
+    margin: 0;
+  }
+
+  .facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    margin-top: 38px;
+    border-top: 1px solid var(--rule);
+  }
+  .fact {
+    flex: 1 1 150px;
+    padding: 16px 20px 14px 0;
+    border-right: 1px solid var(--rule);
+  }
+  .fact:last-child { border-right: 0; }
+  .fact dt {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: 0 0 6px;
+  }
+  .fact dd {
+    margin: 0;
+    font-family: var(--mono);
+    font-size: 1.15rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+  }
+
+  /* ---------- sections ---------- */
+  section { padding-top: 64px; }
+  .layer-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 10px;
+  }
+  h2 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: clamp(1.6rem, 3.2vw, 2.15rem);
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    margin: 0 0 18px;
+    text-wrap: balance;
+  }
+  h3 {
+    font-family: var(--body);
+    font-weight: 650;
+    font-size: 1.02rem;
+    letter-spacing: -0.005em;
+    margin: 34px 0 10px;
+  }
+  p, ul, ol { max-width: var(--measure); }
+  p { margin: 0 0 16px; }
+  ul, ol { padding-left: 1.15em; margin: 0 0 16px; }
+  li { margin-bottom: 7px; }
+  strong { font-weight: 650; }
+  code {
+    font-family: var(--mono);
+    font-size: 0.875em;
+    background: var(--sunk);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 0.08em 0.34em;
+  }
+
+  .pullquote {
+    font-family: var(--display);
+    font-size: 1.22rem;
+    line-height: 1.45;
+    color: var(--ink);
+    border-left: 3px solid var(--signal);
+    padding: 4px 0 4px 22px;
+    margin: 28px 0;
+    max-width: 56ch;
+  }
+
+  /* ---------- figures ---------- */
+  figure {
+    margin: 34px 0 10px;
+    padding: 0;
+  }
+  .figbox {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    padding: 26px 22px 20px;
+    overflow-x: auto;
+  }
+  figure svg {
+    display: block;
+    width: 100%;
+    min-width: 640px;
+    max-width: 100%;
+    height: auto;
+    color: var(--ink);
+    font-family: var(--mono);
+  }
+  figcaption {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    margin-top: 12px;
+    max-width: 64ch;
+  }
+  figcaption b { color: var(--ink); font-weight: 650; }
+
+  /* ---------- tables ---------- */
+  .tablewrap { overflow-x: auto; margin: 22px 0 10px; }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 520px;
+    font-size: 0.9rem;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 14px 10px 0;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  th {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    font-weight: 500;
+    border-bottom: 1px solid var(--rule-firm);
+  }
+  td.k { font-family: var(--mono); font-size: 0.84rem; white-space: nowrap; }
+  td.num {
+    font-family: var(--mono);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  /* ---------- guard cards ---------- */
+  .guards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    margin: 26px 0 10px;
+  }
+  .guard { background: var(--surface); padding: 20px 20px 18px; }
+  .guard .gnum {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    color: var(--signal);
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 8px;
+  }
+  .guard h4 {
+    font-family: var(--body);
+    font-size: 0.97rem;
+    font-weight: 650;
+    margin: 0 0 7px;
+    line-height: 1.3;
+  }
+  .guard p {
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.52;
+    color: var(--ink-soft);
+    max-width: none;
+  }
+  .guard p code { font-size: 0.86em; }
+
+  .absent {
+    list-style: none;
+    padding: 0;
+    max-width: var(--measure);
+    border-top: 1px solid var(--rule);
+  }
+  .absent li {
+    display: flex;
+    gap: 18px;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--rule);
+    margin: 0;
+    font-size: 0.9rem;
+  }
+  .absent b {
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    font-weight: 500;
+    flex: 0 0 150px;
+    color: var(--ink);
+  }
+  .absent span { color: var(--ink-soft); }
+
+  footer {
+    margin-top: 80px;
+    padding-top: 22px;
+    border-top: 2px solid var(--ink);
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    max-width: var(--measure);
+  }
+
+  @media (max-width: 640px) {
+    .wrap { padding: 0 18px 80px; }
+    .fact { flex-basis: 50%; border-right: 0; }
+    .absent li { flex-direction: column; gap: 3px; }
+    .absent b { flex: none; }
+  }
+</style>
+
+<div class="wrap">
+
+<header class="masthead">
+  <p class="eyebrow">System design · French client-satisfaction analysis</p>
+  <h1>Satisfaction Pipeline Architecture</h1>
+  <p class="standfirst">An offline batch pipeline that produces one artifact, and a stateless demo that serves it. The whole design answers a single question: how do you guarantee that the thing you measured and the thing you serve are the same thing?</p>
+
+  <dl class="facts">
+    <div class="fact"><dt>Backbone</dt><dd>TF-IDF + LogReg</dd></div>
+    <div class="fact"><dt>Macro-F1</dt><dd>0.9286</dd></div>
+    <div class="fact"><dt>Artifact size</dt><dd>8.5 MB</dd></div>
+    <div class="fact"><dt>Tests</dt><dd>57 · no GPU</dd></div>
+    <div class="fact"><dt>Serving</dt><dd>1 CPU process</dd></div>
+  </dl>
+</header>
+
+<section>
+  <span class="layer-tag">The driver</span>
+  <h2>Two questions, measured two different ways</h2>
+  <p>Almost every sentiment system measures per-comment accuracy and reports it as though it answered the business question. It doesn't — and the gap between the two is what shapes this architecture.</p>
+
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th></th><th>Model question</th><th>Product question</th></tr></thead>
+      <tbody>
+        <tr><td class="k">asks</td><td>Is <em>this</em> review positive?</td><td>What share of clients are satisfied?</td></tr>
+        <tr><td class="k">unit</td><td>One comment</td><td>A population of comments</td></tr>
+        <tr><td class="k">metric</td><td>Accuracy, macro-F1</td><td>Estimated prevalence + interval</td></tr>
+        <tr><td class="k">fails when</td><td>It misclassifies</td><td>Its errors are <strong>asymmetric</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="pullquote">A classifier at 96% accuracy whose errors skew one way reports “14% satisfied” for a population that is truly 10% satisfied. Accuracy never surfaces that. It needs a different estimator, layered on top.</p>
+
+  <p>So the system has two stacked components with separate acceptance criteria: a <strong>classifier</strong>, and an <strong>estimator</strong> built on it. Everything below exists to keep those two honest about each other.</p>
+</section>
+
+<section>
+  <span class="layer-tag">Layer map</span>
+  <h2>Three layers and one seam</h2>
+
+  <figure>
+    <div class="figbox">
+      <svg viewBox="0 0 1000 580" role="img" aria-label="Three-layer architecture: build-time notebooks produce three artifacts, which configure the serve-time demo; the shared src library is imported by both build and serve.">
+        <defs>
+          <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"/>
+          </marker>
+          <marker id="arS" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--signal)"/>
+          </marker>
+        </defs>
+
+        <!-- column headings -->
+        <text x="40" y="26" font-size="11.5" letter-spacing="1.6" fill="var(--ink-soft)">BUILD-TIME · runs once</text>
+        <text x="392" y="26" font-size="11.5" letter-spacing="1.6" fill="var(--signal)">ARTIFACT CONTRACT</text>
+        <text x="738" y="26" font-size="11.5" letter-spacing="1.6" fill="var(--ink-soft)">SERVE-TIME · stateless</text>
+
+        <!-- build column -->
+        <rect x="40" y="42" width="258" height="330" fill="none" stroke="currentColor" stroke-opacity=".22" stroke-dasharray="3 4"/>
+        <g font-size="12.5">
+          <rect x="60" y="64" width="218" height="40" fill="var(--sunk)" stroke="currentColor" stroke-opacity=".35"/>
+          <text x="76" y="82">00_audit</text><text x="76" y="97" font-size="10.5" fill="var(--ink-soft)">max_length · dedup · subsample</text>
+
+          <rect x="60" y="122" width="218" height="40" fill="var(--sunk)" stroke="currentColor" stroke-opacity=".35"/>
+          <text x="76" y="140">02_model</text><text x="76" y="155" font-size="10.5" fill="var(--ink-soft)">train · split calib / holdout</text>
+
+          <rect x="60" y="180" width="218" height="40" fill="var(--sunk)" stroke="currentColor" stroke-opacity=".35"/>
+          <text x="76" y="198">04_calibration</text><text x="76" y="213" font-size="10.5" fill="var(--ink-soft)">T · θ_lo · θ_hi</text>
+
+          <rect x="60" y="238" width="218" height="40" fill="var(--sunk)" stroke="currentColor" stroke-opacity=".35"/>
+          <text x="76" y="256">06_aggregate</text><text x="76" y="271" font-size="10.5" fill="var(--ink-soft)">TPR · FPR</text>
+
+          <rect x="60" y="296" width="218" height="40" fill="var(--sunk)" stroke="currentColor" stroke-opacity=".35"/>
+          <text x="76" y="314">07_aspects</text><text x="76" y="329" font-size="10.5" fill="var(--ink-soft)">derived lexicons</text>
+        </g>
+
+        <!-- artifacts column -->
+        <rect x="358" y="42" width="284" height="330" fill="none" stroke="var(--signal)" stroke-opacity=".5"/>
+        <g font-size="12.5">
+          <rect x="382" y="92" width="236" height="46" fill="var(--surface)" stroke="var(--signal)" stroke-width="1.5"/>
+          <text x="398" y="112">model.joblib</text><text x="398" y="128" font-size="10.5" fill="var(--ink-soft)">weights · 8.5 MB</text>
+
+          <rect x="382" y="162" width="236" height="60" fill="var(--surface)" stroke="var(--signal)" stroke-width="1.5"/>
+          <text x="398" y="182">inference_config.json</text>
+          <text x="398" y="198" font-size="10.5" fill="var(--ink-soft)">T · θ · TPR · FPR · labels</text>
+          <text x="398" y="212" font-size="10.5" fill="var(--ink-soft)">max_length · normalize_version</text>
+
+          <rect x="382" y="246" width="236" height="46" fill="var(--surface)" stroke="var(--signal)" stroke-width="1.5"/>
+          <text x="398" y="266">aspect_lexicons.json</text><text x="398" y="282" font-size="10.5" fill="var(--ink-soft)">6 corpus-derived buckets</text>
+        </g>
+
+        <!-- serve column -->
+        <rect x="702" y="42" width="258" height="330" fill="none" stroke="currentColor" stroke-opacity=".22" stroke-dasharray="3 4"/>
+        <g font-size="12.5">
+          <rect x="722" y="92" width="218" height="46" fill="var(--sunk)" stroke="currentColor" stroke-opacity=".35"/>
+          <text x="738" y="112">app.py — batch tab</text><text x="738" y="128" font-size="10.5" fill="var(--ink-soft)">CSV → rate + CI + aspects</text>
+
+          <rect x="722" y="162" width="218" height="46" fill="var(--sunk)" stroke="currentColor" stroke-opacity=".35"/>
+          <text x="738" y="182">app.py — single tab</text><text x="738" y="198" font-size="10.5" fill="var(--ink-soft)">text → label + probability</text>
+
+          <rect x="722" y="246" width="218" height="46" fill="var(--sunk)" stroke="currentColor" stroke-opacity=".35"/>
+          <text x="738" y="266">input guards</text><text x="738" y="282" font-size="10.5" fill="var(--ink-soft)">empty · non-French · truncation</text>
+        </g>
+
+        <!-- arrows build -> artifacts -->
+        <g stroke="var(--signal)" stroke-width="1.4" fill="none" marker-end="url(#arS)">
+          <path d="M 278 84 C 330 84 340 112 378 112"/>
+          <path d="M 278 142 C 330 142 340 118 378 118"/>
+          <path d="M 278 200 C 330 200 344 186 378 186"/>
+          <path d="M 278 258 C 330 258 344 196 378 196"/>
+          <path d="M 278 316 C 330 316 344 268 378 268"/>
+        </g>
+        <text x="300" y="352" font-size="10.5" fill="var(--signal)">produces</text>
+
+        <!-- arrows artifacts -> serve -->
+        <g stroke="var(--signal)" stroke-width="1.4" fill="none" marker-end="url(#arS)">
+          <path d="M 622 116 C 668 116 676 114 718 114"/>
+          <path d="M 622 190 C 668 190 676 186 718 186"/>
+          <path d="M 622 268 C 668 268 676 268 718 268"/>
+        </g>
+        <text x="648" y="352" font-size="10.5" fill="var(--signal)">configures</text>
+
+        <!-- library band -->
+        <rect x="40" y="432" width="920" height="108" fill="var(--surface)" stroke="currentColor" stroke-width="1.6"/>
+        <text x="60" y="459" font-size="11.5" letter-spacing="1.6" fill="var(--accent)">SHARED LIBRARY · src/ — the seam</text>
+        <g font-size="12">
+          <text x="60" y="492">normalize.py</text>
+          <text x="60" y="508" font-size="10.5" fill="var(--ink-soft)">one definition</text>
+          <text x="290" y="492">predict.py</text>
+          <text x="290" y="508" font-size="10.5" fill="var(--ink-soft)">pipeline + swappable backend</text>
+          <text x="600" y="492">estimate.py</text>
+          <text x="600" y="508" font-size="10.5" fill="var(--ink-soft)">ACC correction + bootstrap CI</text>
+          <text x="830" y="492">aspects.py</text>
+          <text x="830" y="508" font-size="10.5" fill="var(--ink-soft)">attribution</text>
+        </g>
+
+        <!-- library -> both columns -->
+        <g stroke="currentColor" stroke-width="1.3" fill="none" marker-end="url(#ar)">
+          <path d="M 169 432 L 169 376"/>
+          <path d="M 831 432 L 831 376"/>
+        </g>
+        <text x="186" y="412" font-size="10.5" fill="var(--ink-soft)">imported by</text>
+        <text x="700" y="412" font-size="10.5" fill="var(--ink-soft)">imported by — the same code</text>
+      </svg>
+    </div>
+    <figcaption><b>The seam is the point.</b> Build and serve never share a process, a machine, or a moment in time — only the three artifacts in the middle and the library underneath. Because both columns import the same <code>src/</code>, evaluation and serving run byte-identical code; if the transformer carried its own copy of the pipeline, the two would drift and the published numbers would quietly stop describing what users get.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <span class="layer-tag">Request path</span>
+  <h2>Where each measured parameter enters</h2>
+
+  <figure>
+    <div class="figbox">
+      <svg viewBox="0 0 1000 400" role="img" aria-label="The request pipeline: normalize, encode, divide by temperature, apply neutral band, emit label; with config parameters injected at each stage and an aggregate branch applying the ACC correction.">
+        <defs>
+          <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"/>
+          </marker>
+          <marker id="ar2s" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--signal)"/>
+          </marker>
+        </defs>
+
+        <text x="40" y="24" font-size="11.5" letter-spacing="1.6" fill="var(--signal)">INJECTED FROM inference_config.json</text>
+
+        <!-- config chips -->
+        <g font-size="11">
+          <rect x="52" y="40" width="136" height="26" fill="none" stroke="var(--signal)" stroke-dasharray="3 3"/>
+          <text x="66" y="57" fill="var(--signal)">normalize_version</text>
+
+          <rect x="238" y="40" width="136" height="26" fill="none" stroke="var(--signal)" stroke-dasharray="3 3"/>
+          <text x="252" y="57" fill="var(--signal)">model · max_length</text>
+
+          <rect x="424" y="40" width="136" height="26" fill="none" stroke="var(--signal)" stroke-dasharray="3 3"/>
+          <text x="476" y="57" fill="var(--signal)">T</text>
+
+          <rect x="610" y="40" width="136" height="26" fill="none" stroke="var(--signal)" stroke-dasharray="3 3"/>
+          <text x="638" y="57" fill="var(--signal)">θ_lo · θ_hi</text>
+        </g>
+        <g stroke="var(--signal)" stroke-width="1.1" stroke-dasharray="3 3" fill="none" marker-end="url(#ar2s)">
+          <path d="M 120 66 L 120 108"/>
+          <path d="M 306 66 L 306 108"/>
+          <path d="M 492 66 L 492 108"/>
+          <path d="M 678 66 L 678 108"/>
+        </g>
+
+        <!-- stages -->
+        <g font-size="12.5">
+          <rect x="52" y="112" width="136" height="52" fill="var(--sunk)" stroke="currentColor" stroke-opacity=".4"/>
+          <text x="120" y="136" text-anchor="middle">normalize</text>
+          <text x="120" y="152" text-anchor="middle" font-size="10" fill="var(--ink-soft)">NFKC · strip · keep case</text>
+
+          <rect x="238" y="112" width="136" height="52" fill="var(--sunk)" stroke="currentColor" stroke-opacity=".4"/>
+          <text x="306" y="136" text-anchor="middle">backend</text>
+          <text x="306" y="152" text-anchor="middle" font-size="10" fill="var(--ink-soft)">→ logits</text>
+
+          <rect x="424" y="112" width="136" height="52" fill="var(--sunk)" stroke="currentColor" stroke-opacity=".4"/>
+          <text x="492" y="136" text-anchor="middle">calibrate</text>
+          <text x="492" y="152" text-anchor="middle" font-size="10" fill="var(--ink-soft)">÷T → softmax</text>
+
+          <rect x="610" y="112" width="136" height="52" fill="var(--sunk)" stroke="currentColor" stroke-opacity=".4"/>
+          <text x="678" y="136" text-anchor="middle">neutral band</text>
+          <text x="678" y="152" text-anchor="middle" font-size="10" fill="var(--ink-soft)">abstain if inside</text>
+
+          <rect x="796" y="112" width="152" height="52" fill="var(--surface)" stroke="currentColor" stroke-width="1.5"/>
+          <text x="872" y="136" text-anchor="middle">label</text>
+          <text x="872" y="152" text-anchor="middle" font-size="10" fill="var(--ink-soft)">négatif/neutre/positif</text>
+        </g>
+
+        <!-- stage arrows -->
+        <g stroke="currentColor" stroke-width="1.4" fill="none" marker-end="url(#ar2)">
+          <path d="M 188 138 L 234 138"/>
+          <path d="M 374 138 L 420 138"/>
+          <path d="M 560 138 L 606 138"/>
+          <path d="M 746 138 L 792 138"/>
+        </g>
+        <text x="52" y="100" font-size="10.5" fill="var(--ink-soft)">raw text</text>
+
+        <!-- aggregate branch -->
+        <path d="M 872 164 L 872 212 L 300 212 L 300 246" stroke="currentColor" stroke-width="1.4" fill="none" marker-end="url(#ar2)"/>
+        <text x="600" y="206" font-size="10.5" fill="var(--ink-soft)">many comments — confident ones only</text>
+
+        <text x="40" y="240" font-size="11.5" letter-spacing="1.6" fill="var(--warn)">AGGREGATE LAYER · the population question</text>
+
+        <g font-size="12.5">
+          <rect x="196" y="250" width="208" height="52" fill="var(--sunk)" stroke="var(--warn)" stroke-opacity=".6"/>
+          <text x="300" y="274" text-anchor="middle">count positives</text>
+          <text x="300" y="290" text-anchor="middle" font-size="10" fill="var(--warn)">biased — do not report</text>
+
+          <rect x="452" y="250" width="208" height="52" fill="var(--surface)" stroke="var(--signal)" stroke-width="1.8"/>
+          <text x="556" y="274" text-anchor="middle">ACC correction</text>
+          <text x="556" y="290" text-anchor="middle" font-size="10" fill="var(--ink-soft)">(p̂ − FPR) / (TPR − FPR)</text>
+
+          <rect x="708" y="250" width="240" height="52" fill="var(--surface)" stroke="currentColor" stroke-width="1.5"/>
+          <text x="828" y="274" text-anchor="middle">rate + bootstrap CI</text>
+          <text x="828" y="290" text-anchor="middle" font-size="10" fill="var(--ink-soft)">“32% satisfaits [25–38%]”</text>
+        </g>
+        <g stroke="currentColor" stroke-width="1.4" fill="none" marker-end="url(#ar2)">
+          <path d="M 404 276 L 448 276"/>
+          <path d="M 660 276 L 704 276"/>
+        </g>
+
+        <rect x="452" y="320" width="136" height="26" fill="none" stroke="var(--signal)" stroke-dasharray="3 3"/>
+        <text x="476" y="337" font-size="11" fill="var(--signal)">TPR · FPR</text>
+        <path d="M 520 320 L 520 306" stroke="var(--signal)" stroke-width="1.1" stroke-dasharray="3 3" fill="none" marker-end="url(#ar2s)"/>
+
+        <text x="40" y="378" font-size="10.5" fill="var(--ink-soft)">Every dashed value is measured on labelled data in a named notebook, then travels with the weights. None is hard-coded.</text>
+      </svg>
+    </div>
+    <figcaption><b>Four learned numbers live outside the weights.</b> <code>T</code>, <code>θ_lo</code>, <code>θ_hi</code>, <code>TPR</code> and <code>FPR</code> are fit on different splits in different phases — they are as much a part of the model as the coefficients. Separating them into a versioned config is what makes the drift detectable; keeping them as literals in a notebook is what makes it invisible.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <span class="layer-tag">Data discipline</span>
+  <h2>Who is allowed to read what</h2>
+
+  <figure>
+    <div class="figbox">
+      <svg viewBox="0 0 1000 400" role="img" aria-label="Split discipline: 200,000 reviews divided into 160k train subsampled to 40k, 20k validation split into calibration and holdout halves, and a 20k test split read by exactly one notebook at the end.">
+        <defs>
+          <marker id="ar3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"/>
+          </marker>
+        </defs>
+
+        <rect x="34" y="150" width="150" height="64" fill="var(--surface)" stroke="currentColor" stroke-width="1.6"/>
+        <text x="109" y="176" text-anchor="middle" font-size="13">tblard/allocine</text>
+        <text x="109" y="194" text-anchor="middle" font-size="11" fill="var(--ink-soft)">200,000 avis</text>
+
+        <!-- trunk -->
+        <path d="M 184 182 L 222 182" stroke="currentColor" stroke-width="1.4" fill="none"/>
+        <path d="M 222 72 L 222 326" stroke="currentColor" stroke-width="1.4" fill="none"/>
+
+        <g stroke="currentColor" stroke-width="1.4" fill="none" marker-end="url(#ar3)">
+          <path d="M 222 72 L 270 72"/>
+          <path d="M 222 182 L 270 182"/>
+          <path d="M 222 326 L 270 326"/>
+        </g>
+
+        <!-- train -->
+        <rect x="274" y="48" width="150" height="48" fill="var(--sunk)" stroke="currentColor" stroke-opacity=".4"/>
+        <text x="349" y="70" text-anchor="middle" font-size="12.5">train · 160k</text>
+        <text x="349" y="86" text-anchor="middle" font-size="10" fill="var(--ink-soft)">p90 = 285 tokens</text>
+
+        <path d="M 424 72 L 470 72" stroke="currentColor" stroke-width="1.4" fill="none" marker-end="url(#ar3)"/>
+        <rect x="474" y="48" width="170" height="48" fill="var(--sunk)" stroke="currentColor" stroke-opacity=".4"/>
+        <text x="559" y="70" text-anchor="middle" font-size="12.5">40k stratifié</text>
+        <text x="559" y="86" text-anchor="middle" font-size="10" fill="var(--ink-soft)">seed 42 · fixed</text>
+
+        <path d="M 644 72 L 690 72" stroke="currentColor" stroke-width="1.4" fill="none" marker-end="url(#ar3)"/>
+        <rect x="694" y="52" width="150" height="40" fill="var(--surface)" stroke="currentColor" stroke-opacity=".5"/>
+        <text x="769" y="77" text-anchor="middle" font-size="12">02_model</text>
+
+        <!-- validation -->
+        <rect x="274" y="158" width="150" height="48" fill="var(--sunk)" stroke="currentColor" stroke-opacity=".4"/>
+        <text x="349" y="180" text-anchor="middle" font-size="12.5">validation · 20k</text>
+        <text x="349" y="196" text-anchor="middle" font-size="10" fill="var(--ink-soft)">split 50 / 50</text>
+
+        <path d="M 424 182 L 452 182" stroke="currentColor" stroke-width="1.4" fill="none"/>
+        <path d="M 452 142 L 452 234" stroke="currentColor" stroke-width="1.4" fill="none"/>
+        <g stroke="currentColor" stroke-width="1.4" fill="none" marker-end="url(#ar3)">
+          <path d="M 452 142 L 490 142"/>
+          <path d="M 452 234 L 490 234"/>
+        </g>
+
+        <rect x="494" y="120" width="150" height="44" fill="var(--sunk)" stroke="currentColor" stroke-opacity=".4"/>
+        <text x="569" y="140" text-anchor="middle" font-size="12">calib · 10k</text>
+        <text x="569" y="156" text-anchor="middle" font-size="10" fill="var(--ink-soft)">fits T, θ</text>
+
+        <rect x="494" y="212" width="150" height="44" fill="var(--sunk)" stroke="currentColor" stroke-opacity=".4"/>
+        <text x="569" y="232" text-anchor="middle" font-size="12">holdout · 10k</text>
+        <text x="569" y="248" text-anchor="middle" font-size="10" fill="var(--ink-soft)">measures TPR, FPR</text>
+
+        <g stroke="currentColor" stroke-width="1.4" fill="none" marker-end="url(#ar3)">
+          <path d="M 644 142 L 690 142"/>
+          <path d="M 644 234 L 690 234"/>
+        </g>
+        <rect x="694" y="122" width="150" height="40" fill="var(--surface)" stroke="currentColor" stroke-opacity=".5"/>
+        <text x="769" y="147" text-anchor="middle" font-size="12">04_calibration</text>
+        <rect x="694" y="214" width="150" height="40" fill="var(--surface)" stroke="currentColor" stroke-opacity=".5"/>
+        <text x="769" y="239" text-anchor="middle" font-size="12">06_aggregate</text>
+
+        <!-- test, locked -->
+        <rect x="274" y="302" width="150" height="48" fill="none" stroke="var(--warn)" stroke-width="1.6"/>
+        <text x="349" y="324" text-anchor="middle" font-size="12.5" fill="var(--warn)">test · 20k</text>
+        <text x="349" y="340" text-anchor="middle" font-size="10" fill="var(--warn)">sealed</text>
+
+        <path d="M 424 326 L 690 326" stroke="var(--warn)" stroke-width="1.4" stroke-dasharray="5 4" fill="none" marker-end="url(#ar3)" color="var(--warn)"/>
+        <text x="470" y="316" font-size="10.5" fill="var(--warn)">read exactly once, at the very end</text>
+
+        <rect x="694" y="306" width="150" height="40" fill="none" stroke="var(--warn)" stroke-width="1.6"/>
+        <text x="769" y="331" text-anchor="middle" font-size="12" fill="var(--warn)">08_final_test</text>
+
+        <text x="860" y="331" font-size="10.5" fill="var(--ink-soft)">the only</text>
+        <text x="860" y="345" font-size="10.5" fill="var(--ink-soft)">notebook</text>
+
+        <text x="34" y="384" font-size="10.5" fill="var(--ink-soft)">Every other notebook opens with ds.pop("test") — the split does not exist in its namespace. Enforced by grep, not by discipline.</text>
+      </svg>
+    </div>
+    <figcaption><b>Calibration and rate-measurement get separate halves.</b> Using one half for both would make <code>TPR</code>/<code>FPR</code> reflect thresholds tuned on the same rows, and the bootstrap interval would come out too narrow — confident and wrong, the worst failure mode for a number a client acts on.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <span class="layer-tag">Extensibility</span>
+  <h2>What a backbone swap actually touches</h2>
+
+  <figure>
+    <div class="figbox">
+      <svg viewBox="0 0 1000 350" role="img" aria-label="Backend swap: the sklearn backend currently plugs into a fixed pipeline; a transformer backend plugs into the same socket, changing three config fields and requiring two notebooks to re-run, while normalize, calibrate, band and correction stay unchanged.">
+        <defs>
+          <marker id="ar4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"/>
+          </marker>
+        </defs>
+
+        <text x="40" y="26" font-size="11.5" letter-spacing="1.6" fill="var(--ink-soft)">INTERCHANGEABLE — one method: logits(texts, max_length)</text>
+
+        <rect x="40" y="48" width="230" height="56" fill="var(--surface)" stroke="var(--signal)" stroke-width="1.8"/>
+        <text x="60" y="72" font-size="13">SklearnBackend</text>
+        <text x="60" y="90" font-size="10.5" fill="var(--signal)">in service · 0.9286 · 8.5 MB · CPU</text>
+
+        <rect x="40" y="124" width="230" height="56" fill="var(--sunk)" stroke="currentColor" stroke-opacity=".4" stroke-dasharray="4 4"/>
+        <text x="60" y="148" font-size="13">TransformerBackend</text>
+        <text x="60" y="166" font-size="10.5" fill="var(--ink-soft)">written · awaiting GPU training</text>
+
+        <g stroke="currentColor" stroke-width="1.4" fill="none" marker-end="url(#ar4)">
+          <path d="M 270 76 L 316 76 L 316 112 L 352 112"/>
+          <path d="M 270 152 L 316 152 L 316 118 L 352 118"/>
+        </g>
+
+        <rect x="356" y="48" width="604" height="140" fill="none" stroke="currentColor" stroke-width="1.6"/>
+        <text x="376" y="72" font-size="11.5" letter-spacing="1.4" fill="var(--accent)">UNCHANGED BY THE SWAP · SatisfactionModel</text>
+        <g font-size="12">
+          <rect x="376" y="88" width="128" height="40" fill="var(--sunk)" stroke="currentColor" stroke-opacity=".35"/>
+          <text x="440" y="112" text-anchor="middle">normalize</text>
+          <rect x="520" y="88" width="128" height="40" fill="var(--sunk)" stroke="currentColor" stroke-opacity=".35"/>
+          <text x="584" y="112" text-anchor="middle">÷T · softmax</text>
+          <rect x="664" y="88" width="128" height="40" fill="var(--sunk)" stroke="currentColor" stroke-opacity=".35"/>
+          <text x="728" y="112" text-anchor="middle">neutral band</text>
+          <rect x="808" y="88" width="134" height="40" fill="var(--sunk)" stroke="currentColor" stroke-opacity=".35"/>
+          <text x="875" y="112" text-anchor="middle">ACC correction</text>
+        </g>
+        <text x="376" y="158" font-size="10.5" fill="var(--ink-soft)">Same code paths, same tests, same serving process. The pipeline does not know which encoder it holds.</text>
+        <text x="376" y="176" font-size="10.5" fill="var(--ink-soft)">57 tests cover these stages and pass without torch installed.</text>
+
+        <!-- what changes -->
+        <text x="40" y="232" font-size="11.5" letter-spacing="1.6" fill="var(--warn)">WHAT THE SWAP COSTS</text>
+        <g font-size="12">
+          <rect x="40" y="246" width="290" height="68" fill="var(--sunk)" stroke="var(--warn)" stroke-opacity=".55"/>
+          <text x="60" y="268">3 config fields</text>
+          <text x="60" y="286" font-size="10.5" fill="var(--ink-soft)">backend · model_repo · revision</text>
+          <text x="60" y="302" font-size="10.5" fill="var(--ink-soft)">edit inference_config.json</text>
+
+          <rect x="354" y="246" width="290" height="68" fill="var(--sunk)" stroke="var(--warn)" stroke-opacity=".55"/>
+          <text x="374" y="268">2 notebooks re-run</text>
+          <text x="374" y="286" font-size="10.5" fill="var(--ink-soft)">04_calibration → new T, θ</text>
+          <text x="374" y="302" font-size="10.5" fill="var(--ink-soft)">06_aggregate → new TPR, FPR</text>
+
+          <rect x="668" y="246" width="292" height="68" fill="var(--sunk)" stroke="currentColor" stroke-opacity=".3"/>
+          <text x="688" y="268">0 lines of pipeline code</text>
+          <text x="688" y="286" font-size="10.5" fill="var(--ink-soft)">no app.py change</text>
+          <text x="688" y="302" font-size="10.5" fill="var(--ink-soft)">no test change</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption><b>The recalibration is mandatory, not optional.</b> A new encoder has its own confidence profile and its own error asymmetry, so every learned constant is invalidated. The config validator enforces this: it refuses to aggregate until <code>TPR</code>/<code>FPR</code> are re-measured, so a swapped backbone cannot silently reuse the previous model's numbers.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <span class="layer-tag">Invariants</span>
+  <h2>Four rules the code enforces for you</h2>
+  <p>Each of these is a failure that produces no error message — the system keeps running and quietly stops being true. That is exactly the class of bug worth spending architecture on.</p>
+
+  <div class="guards">
+    <div class="guard">
+      <span class="gnum">Guard</span>
+      <h4>One prediction path</h4>
+      <p>The notebooks and <code>app.py</code> import the same <code>predict()</code>. No notebook may reimplement a stage — writing <code>softmax</code> inline means the contract is already broken.</p>
+    </div>
+    <div class="guard">
+      <span class="gnum">Guard</span>
+      <h4>Normalisation drift alarm</h4>
+      <p>The config carries <code>normalize_version</code>. If it diverges from the code, loading raises instead of serving text that differs from what was evaluated.</p>
+    </div>
+    <div class="guard">
+      <span class="gnum">Guard</span>
+      <h4>No aggregation before measurement</h4>
+      <p><code>require_aggregation=False</code> lets notebook 06 predict in order to <em>measure</em> the rates, but the resulting config refuses to emit a satisfaction figure.</p>
+    </div>
+    <div class="guard">
+      <span class="gnum">Guard</span>
+      <h4>Missing fields name their owner</h4>
+      <p>An unfilled value reports <code>temperature: produced by notebooks/04_calibration.ipynb</code> — the pipeline documents its own ordering instead of raising a KeyError.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <span class="layer-tag">Modules</span>
+  <h2>Four files, one responsibility each</h2>
+
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Module</th><th>Owns</th><th>Depends on</th></tr></thead>
+      <tbody>
+        <tr><td class="k">normalize.py</td><td>Text canonicalisation, versioned. Preserves case, punctuation and emoji — all carry sentiment signal in reviews.</td><td class="num">—</td></tr>
+        <tr><td class="k">estimate.py</td><td>The ACC correction, confusion rates, bootstrap intervals over both uncertainty sources, prevalence resampling.</td><td class="num">numpy</td></tr>
+        <tr><td class="k">aspects.py</td><td>Sentence splitting, lexicon matching, corpus-derived lexicon persistence.</td><td class="num">—</td></tr>
+        <tr><td class="k">predict.py</td><td>Config loading and validation, the two backends, the pipeline, the aggregate entry point.</td><td class="num">the other three</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>The first three are pure Python and numpy. Only <code>predict.py</code> can reach torch, and only lazily inside <code>TransformerBackend.__init__</code> — which is why the whole suite runs in four seconds on a laptop with no deep-learning stack installed.</p>
+</section>
+
+<section>
+  <span class="layer-tag">Scope</span>
+  <h2>Deliberately absent</h2>
+  <p>There is no persistent state, no concurrency problem, and no scaling requirement. Each of the following is defensible on a larger system and is pure overhead here.</p>
+
+  <ul class="absent">
+    <li><b>database</b><span>Nothing to persist. Every request is independent.</span></li>
+    <li><b>auth</b><span>A public demo with no user-specific data.</span></li>
+    <li><b>request queue</b><span>Gradio's default handles demo traffic; the batch cap is 5,000 rows.</span></li>
+    <li><b>retraining loop</b><span>The model is a static artifact, versioned by commit.</span></li>
+    <li><b>API versioning</b><span>Gradio's generated endpoint is incidental, not a product surface.</span></li>
+    <li><b>containers</b><span>Spaces builds the image; a Dockerfile would be maintained for nobody.</span></li>
+  </ul>
+
+  <p style="margin-top:22px">If any of these were needed later, <code>predict()</code> is already the seam to build them against.</p>
+</section>
+
+<footer>
+  <p>Numbers on this page are measured, not projected: macro-F1 and artifact size from <code>02_tfidf_model</code>, temperature and thresholds from <code>04_calibration</code>, error rates from <code>06_aggregate</code>. The classifier is a bag-of-ngrams model — the transformer backend is written but untrained.</p>
+</footer>
+
+</div>
