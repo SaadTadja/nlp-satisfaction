@@ -1,0 +1,550 @@
+<title>Satisfaction Data Layer</title>
+
+<style>
+  :root {
+    --paper:     #F5F7F6;
+    --surface:   #FFFFFF;
+    --sunk:      #EDF1EF;
+    --ink:       #15202A;
+    --ink-soft:  #566269;
+    --rule:      #D3DAD8;
+    --rule-firm: #B4BFBC;
+    --signal:    #0E6B59;
+    --warn:      #A8442C;
+    --accent:    #1F5673;
+
+    --display: ui-serif, "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    --body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+
+    --measure: 68ch;
+    --wide: 1060px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper:     #0F1518;
+      --surface:   #161E22;
+      --sunk:      #121A1D;
+      --ink:       #E6ECEA;
+      --ink-soft:  #94A3A4;
+      --rule:      #2A363A;
+      --rule-firm: #3D4C51;
+      --signal:    #4FBFA4;
+      --warn:      #E0836A;
+      --accent:    #74A9C7;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --paper:     #0F1518;
+    --surface:   #161E22;
+    --sunk:      #121A1D;
+    --ink:       #E6ECEA;
+    --ink-soft:  #94A3A4;
+    --rule:      #2A363A;
+    --rule-firm: #3D4C51;
+    --signal:    #4FBFA4;
+    --warn:      #E0836A;
+    --accent:    #74A9C7;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 16.5px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: var(--wide); margin: 0 auto; padding: 0 28px 120px; }
+
+  header.masthead { padding: 72px 0 40px; border-bottom: 2px solid var(--ink); }
+  .eyebrow {
+    font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--ink-soft); margin: 0 0 18px;
+  }
+  h1 {
+    font-family: var(--display); font-weight: 600;
+    font-size: clamp(2.3rem, 5.4vw, 3.6rem); line-height: 1.06;
+    letter-spacing: -0.02em; margin: 0 0 20px; text-wrap: balance;
+  }
+  .standfirst {
+    font-family: var(--display); font-size: clamp(1.05rem, 2vw, 1.3rem);
+    line-height: 1.5; color: var(--ink-soft); max-width: 58ch; margin: 0;
+  }
+  .facts {
+    display: flex; flex-wrap: wrap; margin-top: 38px;
+    border-top: 1px solid var(--rule);
+  }
+  .fact { flex: 1 1 150px; padding: 16px 20px 14px 0; border-right: 1px solid var(--rule); }
+  .fact:last-child { border-right: 0; }
+  .fact dt {
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--ink-soft); margin: 0 0 6px;
+  }
+  .fact dd {
+    margin: 0; font-family: var(--mono); font-size: 1.15rem;
+    font-variant-numeric: tabular-nums; color: var(--ink);
+  }
+
+  section { padding-top: 64px; }
+  .layer-tag {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.13em;
+    text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 10px;
+  }
+  h2 {
+    font-family: var(--display); font-weight: 600;
+    font-size: clamp(1.6rem, 3.2vw, 2.15rem); line-height: 1.15;
+    letter-spacing: -0.015em; margin: 0 0 18px; text-wrap: balance;
+  }
+  h3 {
+    font-family: var(--body); font-weight: 650; font-size: 1.02rem;
+    margin: 34px 0 10px;
+  }
+  p, ul { max-width: var(--measure); }
+  p { margin: 0 0 16px; }
+  ul { padding-left: 1.15em; margin: 0 0 16px; }
+  li { margin-bottom: 7px; }
+  strong { font-weight: 650; }
+  code {
+    font-family: var(--mono); font-size: 0.875em; background: var(--sunk);
+    border: 1px solid var(--rule); border-radius: 3px; padding: 0.08em 0.34em;
+  }
+
+  .pullquote {
+    font-family: var(--display); font-size: 1.22rem; line-height: 1.45;
+    border-left: 3px solid var(--signal); padding: 4px 0 4px 22px;
+    margin: 28px 0; max-width: 56ch;
+  }
+
+  figure { margin: 34px 0 10px; padding: 0; }
+  .figbox {
+    background: var(--surface); border: 1px solid var(--rule);
+    border-radius: 2px; padding: 26px 22px 20px; overflow-x: auto;
+  }
+  figure svg {
+    display: block; width: 100%; min-width: 640px; max-width: 100%;
+    height: auto; color: var(--ink); font-family: var(--mono);
+  }
+  figcaption {
+    font-size: 0.85rem; line-height: 1.5; color: var(--ink-soft);
+    margin-top: 12px; max-width: 64ch;
+  }
+  figcaption b { color: var(--ink); font-weight: 650; }
+
+  .tablewrap { overflow-x: auto; margin: 22px 0 10px; }
+  table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 0.9rem; }
+  th, td {
+    text-align: left; padding: 10px 14px 10px 0;
+    border-bottom: 1px solid var(--rule); vertical-align: top;
+  }
+  th {
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--ink-soft); font-weight: 500;
+    border-bottom: 1px solid var(--rule-firm);
+  }
+  td.k { font-family: var(--mono); font-size: 0.84rem; white-space: nowrap; }
+  td.num {
+    font-family: var(--mono); font-variant-numeric: tabular-nums;
+    white-space: nowrap; text-align: right; padding-right: 22px;
+  }
+  th.num { text-align: right; padding-right: 22px; }
+  .verdict { font-weight: 650; color: var(--signal); }
+  .verdict.flag { color: var(--warn); }
+
+  .guards {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    gap: 1px; background: var(--rule); border: 1px solid var(--rule); margin: 26px 0 10px;
+  }
+  .guard { background: var(--surface); padding: 20px 20px 18px; }
+  .guard .gnum {
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.1em;
+    color: var(--signal); text-transform: uppercase; display: block; margin-bottom: 8px;
+  }
+  .guard h4 { font-family: var(--body); font-size: 0.97rem; font-weight: 650; margin: 0 0 7px; line-height: 1.3; }
+  .guard p { margin: 0; font-size: 0.875rem; line-height: 1.52; color: var(--ink-soft); max-width: none; }
+
+  .pending {
+    border: 1px solid var(--warn); background: var(--surface);
+    padding: 22px 24px; margin: 28px 0 10px; max-width: var(--measure);
+  }
+  .pending .gnum {
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.1em;
+    color: var(--warn); text-transform: uppercase; display: block; margin-bottom: 8px;
+  }
+  .pending p:last-child { margin-bottom: 0; }
+
+  footer {
+    margin-top: 80px; padding-top: 22px; border-top: 2px solid var(--ink);
+    font-size: 0.85rem; color: var(--ink-soft); max-width: var(--measure);
+  }
+
+  @media (max-width: 640px) {
+    .wrap { padding: 0 18px 80px; }
+    .fact { flex-basis: 50%; border-right: 0; }
+  }
+</style>
+
+<div class="wrap">
+
+<header class="masthead">
+  <p class="eyebrow">Data layer · French client-satisfaction analysis</p>
+  <h1>Satisfaction Data Layer</h1>
+  <p class="standfirst">One immutable corpus, five audit checks, and four index arrays. No row is ever copied, mutated, or written back — every split is a view, and every parameter downstream traces to a check that produced it.</p>
+
+  <dl class="facts">
+    <div class="fact"><dt>Source rows</dt><dd>200,000</dd></div>
+    <div class="fact"><dt>Rows copied</dt><dd>0</dd></div>
+    <div class="fact"><dt>Index storage</dt><dd>625 KB</dd></div>
+    <div class="fact"><dt>Audit checks</dt><dd>5</dd></div>
+    <div class="fact"><dt>Params emitted</dt><dd>2 → config</dd></div>
+  </dl>
+</header>
+
+<section>
+  <span class="layer-tag">Contract</span>
+  <h2>What this layer promises downstream</h2>
+  <p>The data layer has one job: hand every consumer the same rows, in the same form, reproducibly — and surface anything about the corpus that would silently invalidate a result further down.</p>
+  <ul>
+    <li><strong>Deterministic.</strong> Every split is an index array generated from a fixed seed. Re-running the audit reproduces them byte for byte.</li>
+    <li><strong>Non-destructive.</strong> The corpus is read-only. Nothing is filtered, cleaned, or rewritten on disk.</li>
+    <li><strong>Self-describing.</strong> Two parameters — <code>max_length</code> and <code>normalize_version</code> — are emitted into the config, so consumers never guess them.</li>
+    <li><strong>Honest about defects.</strong> Duplicates and label conflicts are counted and reported, not quietly dropped.</li>
+  </ul>
+</section>
+
+<section>
+  <span class="layer-tag">Ingestion</span>
+  <h2>Five checks, five decisions</h2>
+
+  <figure>
+    <div class="figbox">
+      <svg viewBox="0 0 1000 470" role="img" aria-label="Ingestion and audit: the Allociné corpus feeds five audit checks — construction, leakage, length, format, and balance — each producing a specific downstream decision or parameter.">
+        <defs>
+          <marker id="d1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"/>
+          </marker>
+          <marker id="d1s" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--signal)"/>
+          </marker>
+        </defs>
+
+        <text x="36" y="24" font-size="11.5" letter-spacing="1.6" fill="var(--ink-soft)">SOURCE</text>
+        <text x="292" y="24" font-size="11.5" letter-spacing="1.6" fill="var(--ink-soft)">AUDIT · 00_audit.ipynb</text>
+        <text x="660" y="24" font-size="11.5" letter-spacing="1.6" fill="var(--signal)">DECISION IT PRODUCED</text>
+
+        <rect x="36" y="178" width="196" height="92" fill="var(--surface)" stroke="currentColor" stroke-width="1.6"/>
+        <text x="54" y="206" font-size="13">tblard/allocine</text>
+        <text x="54" y="226" font-size="10.5" fill="var(--ink-soft)">Hugging Face Hub</text>
+        <text x="54" y="243" font-size="10.5" fill="var(--ink-soft)">review : string</text>
+        <text x="54" y="258" font-size="10.5" fill="var(--ink-soft)">label  : int 0 | 1</text>
+
+        <g stroke="currentColor" stroke-width="1.2" fill="none" marker-end="url(#d1)" stroke-opacity=".75">
+          <path d="M 232 224 C 262 224 262  70 288  70"/>
+          <path d="M 232 224 C 262 224 262 147 288 147"/>
+          <path d="M 232 224 C 262 224 262 224 288 224"/>
+          <path d="M 232 224 C 262 224 262 301 288 301"/>
+          <path d="M 232 224 C 262 224 262 378 288 378"/>
+        </g>
+
+        <g font-size="12.5">
+          <rect x="292" y="44" width="266" height="52" fill="var(--sunk)" stroke="currentColor" stroke-opacity=".4"/>
+          <text x="310" y="66">construction</text>
+          <text x="310" y="84" font-size="10.5" fill="var(--ink-soft)">read 30 reviews per class</text>
+
+          <rect x="292" y="121" width="266" height="52" fill="var(--sunk)" stroke="currentColor" stroke-opacity=".4"/>
+          <text x="310" y="143">leakage</text>
+          <text x="310" y="161" font-size="10.5" fill="var(--ink-soft)">normalised-key hash map</text>
+
+          <rect x="292" y="198" width="266" height="52" fill="var(--sunk)" stroke="currentColor" stroke-opacity=".4"/>
+          <text x="310" y="220">length</text>
+          <text x="310" y="238" font-size="10.5" fill="var(--ink-soft)">tokenise 5,000 · percentiles</text>
+
+          <rect x="292" y="275" width="266" height="52" fill="var(--sunk)" stroke="currentColor" stroke-opacity=".4"/>
+          <text x="310" y="297">format</text>
+          <text x="310" y="315" font-size="10.5" fill="var(--ink-soft)">case · punct · emoji · HTML</text>
+
+          <rect x="292" y="352" width="266" height="52" fill="var(--sunk)" stroke="currentColor" stroke-opacity=".4"/>
+          <text x="310" y="374">balance</text>
+          <text x="310" y="392" font-size="10.5" fill="var(--ink-soft)">class counts per split</text>
+        </g>
+
+        <g stroke="var(--signal)" stroke-width="1.3" fill="none" marker-end="url(#d1s)">
+          <path d="M 558  70 L 648  70"/>
+          <path d="M 558 147 L 648 147"/>
+          <path d="M 558 224 L 648 224"/>
+          <path d="M 558 301 L 648 301"/>
+          <path d="M 558 378 L 648 378"/>
+        </g>
+
+        <g font-size="12">
+          <rect x="652" y="44" width="312" height="52" fill="var(--surface)" stroke="var(--signal)" stroke-width="1.4"/>
+          <text x="670" y="66" fill="var(--signal)">neutral band is viable</text>
+          <text x="670" y="84" font-size="10.5" fill="var(--ink-soft)">lukewarm text present → model will be uncertain</text>
+
+          <rect x="652" y="121" width="312" height="52" fill="var(--surface)" stroke="var(--signal)" stroke-width="1.4"/>
+          <text x="670" y="143" fill="var(--signal)">test_clean_idx · 19,961</text>
+          <text x="670" y="161" font-size="10.5" fill="var(--ink-soft)">46 cross-split dupes · 6 label conflicts</text>
+
+          <rect x="652" y="198" width="312" height="52" fill="var(--surface)" stroke="var(--signal)" stroke-width="1.4"/>
+          <text x="670" y="220" fill="var(--signal)">max_length = 288 → config</text>
+          <text x="670" y="238" font-size="10.5" fill="var(--ink-soft)">p90 · 9.8% truncated · forces 40k subsample</text>
+
+          <rect x="652" y="275" width="312" height="52" fill="var(--surface)" stroke="var(--signal)" stroke-width="1.4"/>
+          <text x="670" y="297" fill="var(--signal)">normalize v1 keeps case</text>
+          <text x="670" y="315" font-size="10.5" fill="var(--ink-soft)">96.3% has uppercase — “NUL” ≠ “nul”</text>
+
+          <rect x="652" y="352" width="312" height="52" fill="var(--surface)" stroke="var(--signal)" stroke-width="1.4"/>
+          <text x="670" y="374" fill="var(--signal)">no class weighting</text>
+          <text x="670" y="392" font-size="10.5" fill="var(--ink-soft)">49.6 / 50.4 — balanced enough to skip it</text>
+        </g>
+
+        <text x="36" y="448" font-size="10.5" fill="var(--ink-soft)">Each check exists because a specific downstream choice depends on it. None is run for completeness.</text>
+      </svg>
+    </div>
+    <figcaption><b>The audit is not exploratory data analysis.</b> Every check was written to settle one decision that something downstream needs, and each returns either a parameter written into <code>inference_config.json</code> or a finding that changes how a later result must be read. A check with no consumer would not be here.</figcaption>
+  </figure>
+
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Check</th><th class="num">Measured</th><th>Verdict</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="k">construction</td>
+          <td class="num">30 reviews read</td>
+          <td><span class="verdict">Hole is in the ratings, not the language.</span> Mixed and lukewarm writing appears in both classes — middle star ratings were dropped, middle prose was not.</td>
+        </tr>
+        <tr>
+          <td class="k">leakage</td>
+          <td class="num">46 · 6</td>
+          <td><span class="verdict flag">46 texts span splits; 6 identical texts carry conflicting labels.</span> The latter is an irreducible error floor. Both reported, neither silently removed.</td>
+        </tr>
+        <tr>
+          <td class="k">length</td>
+          <td class="num">p90 = 285</td>
+          <td><span class="verdict flag">Reviews are long.</span> <code>max_length = 288</code> truncates 9.8% — and review sentiment often sits in the final sentence, so this is not a neutral loss.</td>
+        </tr>
+        <tr>
+          <td class="k">format</td>
+          <td class="num">96.3% caps</td>
+          <td><span class="verdict">Corpus is not lowercased.</span> Normalisation preserves case, punctuation, accents and emoji; it only strips markup, URLs and whitespace.</td>
+        </tr>
+        <tr>
+          <td class="k">balance</td>
+          <td class="num">49.6 / 50.4</td>
+          <td><span class="verdict">Near-balanced.</span> No weighted loss needed — a real simplification the dataset choice bought.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <span class="layer-tag">Storage model</span>
+  <h2>Views, not copies</h2>
+
+  <figure>
+    <div class="figbox">
+      <svg viewBox="0 0 1000 420" role="img" aria-label="The index-overlay storage model: a single immutable corpus with four int64 index arrays selecting views into it, and normalisation applied at read time rather than baked into stored data.">
+        <defs>
+          <marker id="d2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"/>
+          </marker>
+        </defs>
+
+        <text x="40" y="26" font-size="11.5" letter-spacing="1.6" fill="var(--ink-soft)">IMMUTABLE SOURCE · never written to</text>
+
+        <rect x="40" y="44" width="704" height="52" fill="var(--sunk)" stroke="currentColor" stroke-width="1.4"/>
+        <text x="392" y="70" text-anchor="middle" font-size="12.5">train · 160,000</text>
+        <text x="392" y="86" text-anchor="middle" font-size="10" fill="var(--ink-soft)">rows 0 – 159,999</text>
+
+        <rect x="744" y="44" width="88" height="52" fill="var(--sunk)" stroke="currentColor" stroke-width="1.4"/>
+        <text x="788" y="70" text-anchor="middle" font-size="11.5">val</text>
+        <text x="788" y="86" text-anchor="middle" font-size="10" fill="var(--ink-soft)">20k</text>
+
+        <rect x="832" y="44" width="88" height="52" fill="none" stroke="var(--warn)" stroke-width="1.6"/>
+        <text x="876" y="70" text-anchor="middle" font-size="11.5" fill="var(--warn)">test</text>
+        <text x="876" y="86" text-anchor="middle" font-size="10" fill="var(--warn)">20k</text>
+
+        <!-- index arrays -->
+        <text x="40" y="150" font-size="11.5" letter-spacing="1.6" fill="var(--signal)">INDEX ARRAYS · int64, seed 42 — the only thing written to disk</text>
+
+        <g font-size="11.5">
+          <rect x="40" y="166" width="206" height="58" fill="var(--surface)" stroke="var(--signal)" stroke-width="1.4"/>
+          <text x="56" y="188">train_subsample_40k</text>
+          <text x="56" y="206" font-size="10" fill="var(--ink-soft)">(40000,) · 313 KB · stratified</text>
+
+          <rect x="262" y="166" width="150" height="58" fill="var(--surface)" stroke="var(--signal)" stroke-width="1.4"/>
+          <text x="278" y="188">calib_idx</text>
+          <text x="278" y="206" font-size="10" fill="var(--ink-soft)">(10000,) · 78 KB</text>
+
+          <rect x="428" y="166" width="150" height="58" fill="var(--surface)" stroke="var(--signal)" stroke-width="1.4"/>
+          <text x="444" y="188">hold_idx</text>
+          <text x="444" y="206" font-size="10" fill="var(--ink-soft)">(10000,) · 78 KB</text>
+
+          <rect x="594" y="166" width="170" height="58" fill="var(--surface)" stroke="var(--warn)" stroke-width="1.4"/>
+          <text x="610" y="188" fill="var(--warn)">test_clean_idx</text>
+          <text x="610" y="206" font-size="10" fill="var(--ink-soft)">(19961,) · 156 KB</text>
+        </g>
+
+        <g stroke="currentColor" stroke-width="1.2" fill="none" marker-end="url(#d2)" stroke-opacity=".7">
+          <path d="M 143 166 L 143 100"/>
+          <path d="M 337 166 L 337 132 L 780 132 L 780 100"/>
+          <path d="M 503 166 L 503 142 L 796 142 L 796 100"/>
+          <path d="M 679 166 L 679 122 L 876 122 L 876 100"/>
+        </g>
+        <text x="152" y="120" font-size="10" fill="var(--ink-soft)">selects</text>
+
+        <!-- normalize strip -->
+        <rect x="40" y="262" width="724" height="40" fill="var(--sunk)" stroke="var(--accent)" stroke-width="1.5"/>
+        <text x="58" y="287" font-size="12.5" fill="var(--accent)">normalize()  —  applied at read time, never baked into stored data</text>
+
+        <g stroke="currentColor" stroke-width="1.2" fill="none" marker-end="url(#d2)">
+          <path d="M 143 224 L 143 258"/>
+          <path d="M 337 224 L 337 258"/>
+          <path d="M 503 224 L 503 258"/>
+        </g>
+
+        <path d="M 402 302 L 402 338" stroke="currentColor" stroke-width="1.4" fill="none" marker-end="url(#d2)"/>
+        <rect x="262" y="342" width="280" height="44" fill="var(--surface)" stroke="currentColor" stroke-width="1.5"/>
+        <text x="402" y="369" text-anchor="middle" font-size="12.5">consumers · notebooks 02–07</text>
+
+        <text x="800" y="283" font-size="11" fill="var(--signal)">625 KB total</text>
+        <text x="800" y="300" font-size="10" fill="var(--ink-soft)">vs ~100 MB if</text>
+        <text x="800" y="314" font-size="10" fill="var(--ink-soft)">splits were copied</text>
+      </svg>
+    </div>
+    <figcaption><b>Two consequences worth the pattern.</b> Changing <code>normalize()</code> invalidates the config version but not a single stored split, because normalisation was never written down — so a text-handling fix does not force a re-partition. And a split cannot drift from its source, because there is no second copy to drift from.</figcaption>
+  </figure>
+
+  <p class="pullquote">The corpus is addressed, not duplicated. Four arrays totalling 625 KB describe every partition of a 200,000-row dataset, and the source of truth stays the pinned Hub revision.</p>
+</section>
+
+<section>
+  <span class="layer-tag">Leakage</span>
+  <h2>How duplicates are found and what happens to them</h2>
+
+  <figure>
+    <div class="figbox">
+      <svg viewBox="0 0 1000 330" role="img" aria-label="Leakage detection: all 200,000 texts are reduced to normalised keys in a hash map, which yields cross-split duplicates, within-split duplicates, and texts with conflicting labels; only the cross-split set produces a filtered test index.">
+        <defs>
+          <marker id="d3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"/>
+          </marker>
+        </defs>
+
+        <rect x="36" y="118" width="164" height="64" fill="var(--sunk)" stroke="currentColor" stroke-opacity=".45"/>
+        <text x="118" y="144" text-anchor="middle" font-size="12.5">200,000 texts</text>
+        <text x="118" y="162" text-anchor="middle" font-size="10" fill="var(--ink-soft)">all three splits</text>
+
+        <path d="M 200 150 L 244 150" stroke="currentColor" stroke-width="1.4" fill="none" marker-end="url(#d3)"/>
+
+        <rect x="248" y="110" width="186" height="80" fill="var(--surface)" stroke="currentColor" stroke-width="1.5"/>
+        <text x="341" y="134" text-anchor="middle" font-size="12.5">norm_key()</text>
+        <text x="341" y="152" text-anchor="middle" font-size="10" fill="var(--ink-soft)">NFKC · lower · collapse ws</text>
+        <text x="341" y="170" text-anchor="middle" font-size="10" fill="var(--ink-soft)">→ hash map of occurrences</text>
+
+        <path d="M 434 150 L 470 150" stroke="currentColor" stroke-width="1.4" fill="none"/>
+        <path d="M 470 52 L 470 258" stroke="currentColor" stroke-width="1.4" fill="none"/>
+        <g stroke="currentColor" stroke-width="1.4" fill="none" marker-end="url(#d3)">
+          <path d="M 470  52 L 512  52"/>
+          <path d="M 470 150 L 512 150"/>
+          <path d="M 470 258 L 512 258"/>
+        </g>
+
+        <g font-size="12">
+          <rect x="516" y="28" width="238" height="48" fill="var(--sunk)" stroke="var(--warn)" stroke-opacity=".6"/>
+          <text x="534" y="48" fill="var(--warn)">cross-split · 46</text>
+          <text x="534" y="65" font-size="10" fill="var(--ink-soft)">inflates test for free</text>
+
+          <rect x="516" y="126" width="238" height="48" fill="var(--sunk)" stroke="currentColor" stroke-opacity=".35"/>
+          <text x="534" y="146">within-split dupes</text>
+          <text x="534" y="163" font-size="10" fill="var(--ink-soft)">harmless — counted only</text>
+
+          <rect x="516" y="234" width="238" height="48" fill="var(--sunk)" stroke="var(--warn)" stroke-opacity=".6"/>
+          <text x="534" y="254" fill="var(--warn)">label conflicts · 6</text>
+          <text x="534" y="271" font-size="10" fill="var(--ink-soft)">irreducible error floor</text>
+        </g>
+
+        <path d="M 754 52 L 798 52 L 798 126 L 822 126" stroke="currentColor" stroke-width="1.4" fill="none" marker-end="url(#d3)"/>
+        <rect x="826" y="104" width="142" height="48" fill="var(--surface)" stroke="var(--warn)" stroke-width="1.5"/>
+        <text x="897" y="124" text-anchor="middle" font-size="11.5" fill="var(--warn)">test_clean_idx</text>
+        <text x="897" y="141" text-anchor="middle" font-size="10" fill="var(--ink-soft)">19,961 of 20,000</text>
+
+        <path d="M 754 258 L 820 258" stroke="currentColor" stroke-width="1.2" stroke-dasharray="4 4" fill="none" marker-end="url(#d3)"/>
+        <text x="826" y="254" font-size="10.5" fill="var(--ink-soft)">reported in the</text>
+        <text x="826" y="268" font-size="10.5" fill="var(--ink-soft)">model card only</text>
+
+        <text x="36" y="312" font-size="10.5" fill="var(--ink-soft)">39 test rows removed. Both the raw and deduplicated figures go in the final table — dropping rows silently would overstate the cleanup.</text>
+      </svg>
+    </div>
+    <figcaption><b>Detection is separated from action.</b> All three categories are measured, but only cross-split overlap produces a filtered index; within-split repetition is harmless, and label conflicts cannot be fixed — they bound what any model on this corpus can reach, which is information rather than a defect to patch.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <span class="layer-tag">Manifest</span>
+  <h2>Everything this layer writes</h2>
+
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Artifact</th><th class="num">Size</th><th>Produced by</th><th>Consumed by</th></tr></thead>
+      <tbody>
+        <tr><td class="k">train_subsample_40k.npy</td><td class="num">313 KB</td><td class="k">00_audit</td><td class="k">02_model</td></tr>
+        <tr><td class="k">calib_idx.npy</td><td class="num">78 KB</td><td class="k">02_model</td><td class="k">04_calibration</td></tr>
+        <tr><td class="k">hold_idx.npy</td><td class="num">78 KB</td><td class="k">06_aggregate</td><td class="k">06_aggregate</td></tr>
+        <tr><td class="k">test_clean_idx.npy</td><td class="num">156 KB</td><td class="k">00_audit</td><td class="k">08_final_test</td></tr>
+        <tr><td class="k">aspect_lexicons.json</td><td class="num">1.2 KB</td><td class="k">07_aspects</td><td class="k">app.py</td></tr>
+        <tr><td class="k">exemple_feedback.csv</td><td class="num">166 KB</td><td class="k">smoke test</td><td class="k">app.py demo</td></tr>
+        <tr><td class="k">max_length → config</td><td class="num">288</td><td class="k">00_audit</td><td class="k">predict.py</td></tr>
+        <tr><td class="k">normalize_version → config</td><td class="num">v1</td><td class="k">00_audit</td><td class="k">predict.py</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <span class="layer-tag">Invariants</span>
+  <h2>Three rules that hold at this layer</h2>
+
+  <div class="guards">
+    <div class="guard">
+      <span class="gnum">Rule</span>
+      <h4>Seeds are fixed and shared</h4>
+      <p>The 40k subsample and the calib/holdout permutation both use seed 42. Every training run must load the identical subset, or the three-seed model comparison is not a controlled experiment.</p>
+    </div>
+    <div class="guard">
+      <span class="gnum">Rule</span>
+      <h4>Calibration and rates never share rows</h4>
+      <p>Validation splits 50/50. Fitting thresholds and measuring error rates on the same rows would produce a bootstrap interval that is too narrow — confident and wrong.</p>
+    </div>
+    <div class="guard">
+      <span class="gnum">Rule</span>
+      <h4>Test is absent, not merely unused</h4>
+      <p>Every notebook but the last calls <code>ds.pop("test")</code>, so the split does not exist in its namespace. Compliance is checked by grep, not by memory.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <span class="layer-tag">Gap</span>
+  <h2>The dataset this layer does not have</h2>
+
+  <div class="pending">
+    <span class="gnum">Not yet built</span>
+    <p><strong>300 hand-labelled French product-and-service comments, 3-class.</strong> Everything above describes <em>film reviews</em>. The product question this system exists to answer concerns a different domain, and nothing here measures that gap.</p>
+    <p>Two things wait on it: the neutral-band thresholds are currently set by a target abstention rate rather than fitted to real 3-class labels, and the confidence interval propagates only holdout uncertainty — it accounts for zero domain shift, so off-domain it reports tight bounds it has not earned.</p>
+    <p>It cannot be auto-generated. Labelling it with a model would make the inter-annotator figure measure agreement with the system under test.</p>
+  </div>
+</section>
+
+<footer>
+  <p>Every figure on this page comes from an executed notebook: counts and percentiles from <code>00_audit</code>, split sizes from <code>02_tfidf_model</code>, artifact sizes read from disk. Companion page: <em>Satisfaction Pipeline Architecture</em>.</p>
+</footer>
+
+</div>
