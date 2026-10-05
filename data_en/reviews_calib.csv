@@ -1,0 +1,643 @@
+rid,note,hotel,n_sent,label
+1939,3.5,Ibis Casablanca City Center,12,neutral
+2774,4.0,Ibis Fès,10,positive
+5478,5.0,Ibis Oujda,5,positive
+4514,3.0,Ibis Marrakech Palmeraie,4,neutral
+540,2.5,Ibis Casa Sidi Maarouf,1,negative
+6369,3.0,Ibis Tanger City Center,2,neutral
+4891,5.0,Ibis Mohammedia,4,positive
+1716,5.0,Ibis Casablanca City Center,2,positive
+5235,3.5,Ibis Ouarzazate Centre,2,neutral
+2737,1.0,Ibis Fès,12,negative
+2464,4.0,Ibis El Jadida,3,positive
+195,4.0,Ibis Abdelmoumen Casa,2,positive
+2269,5.0,Ibis Casablanca Nearshore,12,positive
+5360,4.5,Ibis Ouarzazate Centre,4,positive
+1621,2.0,Ibis Casablanca City Center,1,negative
+2971,2.5,Ibis Fès,2,negative
+913,0.5,Ibis Casa Voyageurs,1,negative
+5073,1.0,Ibis Ouarzazate Centre,4,negative
+3114,0.5,Ibis Fès,4,negative
+3591,4.0,Ibis Marrakech Centre Gare,4,positive
+1654,1.5,Ibis Casablanca City Center,7,negative
+5483,5.0,Ibis Oujda,14,positive
+5521,5.0,Ibis Rabat Agdal,1,positive
+3512,1.0,Ibis Marrakech Centre Gare,12,negative
+4440,2.0,Ibis Marrakech Palmeraie,1,negative
+4829,5.0,Ibis Mohammedia,9,positive
+5562,4.0,Ibis Rabat Agdal,2,positive
+17,3.0,Ibis Abdelmoumen Casa,1,neutral
+2372,1.0,Ibis El Jadida,4,negative
+413,3.0,Ibis Casa Sidi Maarouf,7,neutral
+3124,4.5,Ibis Fès,4,positive
+1029,4.5,Ibis Casa Voyageurs,5,positive
+3526,4.0,Ibis Marrakech Centre Gare,5,positive
+5849,3.0,Ibis Tanger City Center,8,neutral
+2620,1.0,Ibis El Jadida,1,negative
+5206,4.0,Ibis Ouarzazate Centre,6,positive
+1135,5.0,Ibis Casa Voyageurs,12,positive
+5479,5.0,Ibis Oujda,3,positive
+3300,5.0,Ibis Marrakech Centre Gare,6,positive
+4527,3.5,Ibis Marrakech Palmeraie,1,neutral
+4165,3.5,Ibis Marrakech Centre Gare,3,neutral
+4536,0.5,Ibis Marrakech Palmeraie,3,negative
+5986,5.0,Ibis Tanger City Center,3,positive
+148,4.0,Ibis Abdelmoumen Casa,2,positive
+2522,3.0,Ibis El Jadida,2,neutral
+4991,4.0,Ibis Ouarzazate Centre,3,positive
+1674,0.5,Ibis Casablanca City Center,1,negative
+5023,3.0,Ibis Ouarzazate Centre,10,neutral
+594,3.5,Ibis Casa Sidi Maarouf,1,neutral
+26,3.5,Ibis Abdelmoumen Casa,4,neutral
+4121,5.0,Ibis Marrakech Centre Gare,1,positive
+6340,1.0,Ibis Tanger City Center,7,negative
+2378,1.0,Ibis El Jadida,4,negative
+1554,5.0,Ibis Casablanca City Center,1,positive
+1883,4.5,Ibis Casablanca City Center,1,positive
+2606,4.0,Ibis El Jadida,3,positive
+5051,4.0,Ibis Ouarzazate Centre,6,positive
+4066,5.0,Ibis Marrakech Centre Gare,2,positive
+4360,5.0,Ibis Marrakech Centre Gare,1,positive
+5146,5.0,Ibis Ouarzazate Centre,7,positive
+2138,4.0,Ibis Casablanca Nearshore,5,positive
+2189,4.5,Ibis Casablanca Nearshore,2,positive
+1016,4.5,Ibis Casa Voyageurs,2,positive
+5304,4.0,Ibis Ouarzazate Centre,4,positive
+1310,4.0,Ibis Casablanca City Center,11,positive
+1195,2.0,Ibis Casa Voyageurs,11,negative
+435,5.0,Ibis Casa Sidi Maarouf,5,positive
+3544,2.0,Ibis Marrakech Centre Gare,5,negative
+635,3.0,Ibis Casa Voyageurs,13,neutral
+5247,5.0,Ibis Ouarzazate Centre,2,positive
+1974,4.5,Ibis Casablanca City Center,3,positive
+1481,4.0,Ibis Casablanca City Center,9,positive
+5218,5.0,Ibis Ouarzazate Centre,9,positive
+2092,5.0,Ibis Casablanca Nearshore,14,positive
+4756,4.0,Ibis Mohammedia,2,positive
+77,2.5,Ibis Abdelmoumen Casa,1,negative
+4983,3.0,Ibis Ouarzazate Centre,14,neutral
+4050,4.5,Ibis Marrakech Centre Gare,5,positive
+374,3.0,Ibis Casa Sidi Maarouf,6,neutral
+808,5.0,Ibis Casa Voyageurs,1,positive
+445,3.0,Ibis Casa Sidi Maarouf,6,neutral
+45,2.0,Ibis Abdelmoumen Casa,7,negative
+3322,5.0,Ibis Marrakech Centre Gare,5,positive
+775,1.5,Ibis Casa Voyageurs,1,negative
+5683,2.0,Ibis Rabat Agdal,2,negative
+927,2.0,Ibis Casa Voyageurs,1,negative
+6334,2.5,Ibis Tanger City Center,5,negative
+961,4.5,Ibis Casa Voyageurs,3,positive
+37,3.5,Ibis Abdelmoumen Casa,4,neutral
+5847,3.0,Ibis Tanger City Center,5,neutral
+4049,3.5,Ibis Marrakech Centre Gare,2,neutral
+485,5.0,Ibis Casa Sidi Maarouf,6,positive
+3127,2.5,Ibis Fès,2,negative
+4877,4.0,Ibis Mohammedia,5,positive
+1710,5.0,Ibis Casablanca City Center,2,positive
+1514,1.0,Ibis Casablanca City Center,7,negative
+5265,4.0,Ibis Ouarzazate Centre,4,positive
+4465,4.5,Ibis Marrakech Palmeraie,1,positive
+3840,2.0,Ibis Marrakech Centre Gare,14,negative
+4403,1.0,Ibis Marrakech Palmeraie,11,negative
+271,3.0,Ibis Casa Sidi Maarouf,8,neutral
+1628,4.0,Ibis Casablanca City Center,5,positive
+2834,4.0,Ibis Fès,6,positive
+2110,5.0,Ibis Casablanca Nearshore,11,positive
+4906,5.0,Ibis Mohammedia,4,positive
+854,5.0,Ibis Casa Voyageurs,1,positive
+3653,3.0,Ibis Marrakech Centre Gare,5,neutral
+5178,3.5,Ibis Ouarzazate Centre,1,neutral
+1339,3.0,Ibis Casablanca City Center,7,neutral
+1874,1.0,Ibis Casablanca City Center,1,negative
+3335,4.0,Ibis Marrakech Centre Gare,2,positive
+4346,2.0,Ibis Marrakech Centre Gare,2,negative
+3316,4.0,Ibis Marrakech Centre Gare,5,positive
+4849,5.0,Ibis Mohammedia,6,positive
+3804,5.0,Ibis Marrakech Centre Gare,8,positive
+6139,5.0,Ibis Tanger City Center,1,positive
+6207,2.5,Ibis Tanger City Center,1,negative
+158,5.0,Ibis Abdelmoumen Casa,5,positive
+2935,1.0,Ibis Fès,1,negative
+2938,2.0,Ibis Fès,6,negative
+2327,5.0,Ibis Casablanca Nearshore,2,positive
+2991,2.5,Ibis Fès,1,negative
+1025,4.0,Ibis Casa Voyageurs,3,positive
+1448,4.0,Ibis Casablanca City Center,2,positive
+6050,1.5,Ibis Tanger City Center,1,negative
+3119,3.5,Ibis Fès,1,neutral
+4081,3.0,Ibis Marrakech Centre Gare,3,neutral
+4095,0.5,Ibis Marrakech Centre Gare,1,negative
+2192,5.0,Ibis Casablanca Nearshore,2,positive
+5160,2.5,Ibis Ouarzazate Centre,4,negative
+6188,5.0,Ibis Tanger City Center,13,positive
+5085,3.0,Ibis Ouarzazate Centre,3,neutral
+1360,3.0,Ibis Casablanca City Center,4,neutral
+178,4.5,Ibis Abdelmoumen Casa,14,positive
+1111,5.0,Ibis Casa Voyageurs,1,positive
+4291,0.5,Ibis Marrakech Centre Gare,2,negative
+1914,4.0,Ibis Casablanca City Center,2,positive
+1072,1.0,Ibis Casa Voyageurs,1,negative
+1377,4.0,Ibis Casablanca City Center,6,positive
+146,5.0,Ibis Abdelmoumen Casa,4,positive
+3106,3.0,Ibis Fès,6,neutral
+3622,4.0,Ibis Marrakech Centre Gare,15,positive
+4100,3.0,Ibis Marrakech Centre Gare,3,neutral
+1923,3.0,Ibis Casablanca City Center,13,neutral
+5624,5.0,Ibis Rabat Agdal,3,positive
+606,1.0,Ibis Casa Sidi Maarouf,1,negative
+3117,2.5,Ibis Fès,7,negative
+482,5.0,Ibis Casa Sidi Maarouf,8,positive
+6141,5.0,Ibis Tanger City Center,2,positive
+4522,0.5,Ibis Marrakech Palmeraie,4,negative
+6062,2.0,Ibis Tanger City Center,8,negative
+1262,3.0,Ibis Casablanca City Center,8,neutral
+5227,4.0,Ibis Ouarzazate Centre,3,positive
+4168,4.5,Ibis Marrakech Centre Gare,1,positive
+6299,3.5,Ibis Tanger City Center,2,neutral
+2478,4.0,Ibis El Jadida,3,positive
+590,5.0,Ibis Casa Sidi Maarouf,4,positive
+6244,4.5,Ibis Tanger City Center,1,positive
+1871,5.0,Ibis Casablanca City Center,1,positive
+1779,3.5,Ibis Casablanca City Center,5,neutral
+2986,3.5,Ibis Fès,4,neutral
+6048,5.0,Ibis Tanger City Center,2,positive
+6341,1.0,Ibis Tanger City Center,5,negative
+4905,5.0,Ibis Mohammedia,4,positive
+1234,3.0,Ibis Casa Voyageurs,23,neutral
+5212,5.0,Ibis Ouarzazate Centre,1,positive
+1856,4.0,Ibis Casablanca City Center,7,positive
+361,2.0,Ibis Casa Sidi Maarouf,5,negative
+3477,2.0,Ibis Marrakech Centre Gare,3,negative
+4968,2.0,Ibis Mohammedia,2,negative
+3442,1.0,Ibis Marrakech Centre Gare,4,negative
+6266,2.0,Ibis Tanger City Center,5,negative
+2521,3.0,Ibis El Jadida,2,neutral
+3260,5.0,Ibis Marrakech Centre Gare,4,positive
+1237,4.0,Ibis Casa Voyageurs,13,positive
+3730,5.0,Ibis Marrakech Centre Gare,2,positive
+1346,3.0,Ibis Casablanca City Center,10,neutral
+1681,2.0,Ibis Casablanca City Center,3,negative
+1671,2.5,Ibis Casablanca City Center,3,negative
+881,4.5,Ibis Casa Voyageurs,2,positive
+6205,1.0,Ibis Tanger City Center,1,negative
+303,4.0,Ibis Casa Sidi Maarouf,5,positive
+5176,3.0,Ibis Ouarzazate Centre,5,neutral
+5291,4.0,Ibis Ouarzazate Centre,2,positive
+5473,5.0,Ibis Oujda,6,positive
+4637,2.0,Ibis Meknès,3,negative
+4221,2.0,Ibis Marrakech Centre Gare,2,negative
+5058,4.0,Ibis Ouarzazate Centre,15,positive
+5746,5.0,Ibis Rabat Agdal,3,positive
+6131,5.0,Ibis Tanger City Center,1,positive
+2931,5.0,Ibis Fès,2,positive
+501,4.0,Ibis Casa Sidi Maarouf,1,positive
+2061,4.5,Ibis Casablanca City Center,2,positive
+2501,5.0,Ibis El Jadida,7,positive
+3330,2.0,Ibis Marrakech Centre Gare,1,negative
+767,5.0,Ibis Casa Voyageurs,2,positive
+3338,3.0,Ibis Marrakech Centre Gare,2,neutral
+4456,2.5,Ibis Marrakech Palmeraie,1,negative
+6368,2.5,Ibis Tanger City Center,3,negative
+3798,3.0,Ibis Marrakech Centre Gare,3,neutral
+3459,2.0,Ibis Marrakech Centre Gare,3,negative
+6181,3.0,Ibis Tanger City Center,10,neutral
+278,3.0,Ibis Casa Sidi Maarouf,9,neutral
+1317,4.0,Ibis Casablanca City Center,4,positive
+1875,1.5,Ibis Casablanca City Center,1,negative
+3923,5.0,Ibis Marrakech Centre Gare,3,positive
+2520,5.0,Ibis El Jadida,2,positive
+3086,3.5,Ibis Fès,1,neutral
+4123,5.0,Ibis Marrakech Centre Gare,3,positive
+4327,4.5,Ibis Marrakech Centre Gare,2,positive
+3090,2.5,Ibis Fès,2,negative
+3535,3.0,Ibis Marrakech Centre Gare,15,neutral
+3455,1.0,Ibis Marrakech Centre Gare,2,negative
+2338,2.0,Ibis Casablanca Nearshore,2,negative
+1786,5.0,Ibis Casablanca City Center,6,positive
+4591,4.0,Ibis Marrakech Palmeraie,1,positive
+2906,1.0,Ibis Fès,10,negative
+3907,3.0,Ibis Marrakech Centre Gare,1,neutral
+1748,4.0,Ibis Casablanca City Center,2,positive
+4245,3.0,Ibis Marrakech Centre Gare,6,neutral
+5604,3.5,Ibis Rabat Agdal,4,neutral
+4474,0.5,Ibis Marrakech Palmeraie,4,negative
+3425,2.0,Ibis Marrakech Centre Gare,13,negative
+2252,3.0,Ibis Casablanca Nearshore,14,neutral
+1721,2.0,Ibis Casablanca City Center,16,negative
+1531,4.0,Ibis Casablanca City Center,3,positive
+4454,1.5,Ibis Marrakech Palmeraie,6,negative
+6241,3.0,Ibis Tanger City Center,6,neutral
+5217,5.0,Ibis Ouarzazate Centre,2,positive
+830,4.0,Ibis Casa Voyageurs,9,positive
+5892,5.0,Ibis Tanger City Center,4,positive
+1833,2.0,Ibis Casablanca City Center,1,negative
+554,5.0,Ibis Casa Sidi Maarouf,4,positive
+50,3.0,Ibis Abdelmoumen Casa,5,neutral
+6267,3.0,Ibis Tanger City Center,3,neutral
+4368,3.0,Ibis Marrakech Palmeraie,1,neutral
+6105,2.5,Ibis Tanger City Center,4,negative
+4646,5.0,Ibis Meknès,1,positive
+2716,3.0,Ibis Fès,9,neutral
+4237,4.5,Ibis Marrakech Centre Gare,1,positive
+155,4.0,Ibis Abdelmoumen Casa,2,positive
+1455,4.0,Ibis Casablanca City Center,5,positive
+381,4.0,Ibis Casa Sidi Maarouf,6,positive
+5107,4.0,Ibis Ouarzazate Centre,10,positive
+2476,5.0,Ibis El Jadida,9,positive
+1094,3.5,Ibis Casa Voyageurs,1,neutral
+3832,1.0,Ibis Marrakech Centre Gare,2,negative
+5984,3.0,Ibis Tanger City Center,2,neutral
+2808,1.0,Ibis Fès,5,negative
+1698,4.5,Ibis Casablanca City Center,4,positive
+6026,4.0,Ibis Tanger City Center,1,positive
+4028,3.0,Ibis Marrakech Centre Gare,1,neutral
+4338,4.5,Ibis Marrakech Centre Gare,2,positive
+3826,4.0,Ibis Marrakech Centre Gare,14,positive
+110,5.0,Ibis Abdelmoumen Casa,1,positive
+2907,4.0,Ibis Fès,2,positive
+2072,2.0,Ibis Casablanca City Center,11,negative
+3944,3.0,Ibis Marrakech Centre Gare,9,neutral
+5153,4.5,Ibis Ouarzazate Centre,5,positive
+2777,3.0,Ibis Fès,11,neutral
+3384,1.0,Ibis Marrakech Centre Gare,13,negative
+3741,2.0,Ibis Marrakech Centre Gare,5,negative
+2920,5.0,Ibis Fès,3,positive
+441,5.0,Ibis Casa Sidi Maarouf,1,positive
+4859,5.0,Ibis Mohammedia,17,positive
+1432,3.0,Ibis Casablanca City Center,7,neutral
+5344,3.5,Ibis Ouarzazate Centre,5,neutral
+640,4.0,Ibis Casa Voyageurs,4,positive
+5208,4.5,Ibis Ouarzazate Centre,11,positive
+6418,2.0,Ibis Tanger City Center,2,negative
+1353,1.0,Ibis Casablanca City Center,9,negative
+2559,5.0,Ibis El Jadida,4,positive
+2759,3.0,Ibis Fès,7,neutral
+42,5.0,Ibis Abdelmoumen Casa,12,positive
+5820,4.0,Ibis Tanger City Center,5,positive
+3759,3.0,Ibis Marrakech Centre Gare,5,neutral
+4180,0.5,Ibis Marrakech Centre Gare,1,negative
+6115,5.0,Ibis Tanger City Center,9,positive
+2533,3.0,Ibis El Jadida,6,neutral
+5855,4.0,Ibis Tanger City Center,4,positive
+5308,2.0,Ibis Ouarzazate Centre,2,negative
+1105,4.0,Ibis Casa Voyageurs,8,positive
+1140,2.5,Ibis Casa Voyageurs,1,negative
+4038,3.0,Ibis Marrakech Centre Gare,6,neutral
+2519,2.0,Ibis El Jadida,5,negative
+1701,0.5,Ibis Casablanca City Center,2,negative
+2615,1.0,Ibis El Jadida,5,negative
+2457,4.0,Ibis El Jadida,5,positive
+4164,3.5,Ibis Marrakech Centre Gare,4,neutral
+3575,4.0,Ibis Marrakech Centre Gare,6,positive
+4611,4.0,Ibis Marrakech Palmeraie,12,positive
+888,1.5,Ibis Casa Voyageurs,3,negative
+2846,5.0,Ibis Fès,6,positive
+5004,5.0,Ibis Ouarzazate Centre,7,positive
+3214,1.0,Ibis Marrakech Centre Gare,11,negative
+5186,2.0,Ibis Ouarzazate Centre,6,negative
+5067,2.0,Ibis Ouarzazate Centre,8,negative
+2418,2.0,Ibis El Jadida,3,negative
+4268,1.0,Ibis Marrakech Centre Gare,3,negative
+1215,4.5,Ibis Casa Voyageurs,3,positive
+1018,5.0,Ibis Casa Voyageurs,8,positive
+5590,4.5,Ibis Rabat Agdal,1,positive
+2993,4.5,Ibis Fès,1,positive
+4027,2.5,Ibis Marrakech Centre Gare,1,negative
+1446,3.0,Ibis Casablanca City Center,3,neutral
+5299,3.0,Ibis Ouarzazate Centre,1,neutral
+3844,3.0,Ibis Marrakech Centre Gare,9,neutral
+5731,4.5,Ibis Rabat Agdal,6,positive
+5827,3.0,Ibis Tanger City Center,4,neutral
+4785,3.0,Ibis Mohammedia,1,neutral
+6326,3.5,Ibis Tanger City Center,2,neutral
+6213,5.0,Ibis Tanger City Center,12,positive
+993,2.0,Ibis Casa Voyageurs,2,negative
+5666,4.5,Ibis Rabat Agdal,1,positive
+3989,4.0,Ibis Marrakech Centre Gare,6,positive
+3370,4.0,Ibis Marrakech Centre Gare,6,positive
+4416,3.0,Ibis Marrakech Palmeraie,3,neutral
+3275,3.0,Ibis Marrakech Centre Gare,8,neutral
+5842,3.0,Ibis Tanger City Center,9,neutral
+275,3.0,Ibis Casa Sidi Maarouf,16,neutral
+3825,3.0,Ibis Marrakech Centre Gare,6,neutral
+4780,5.0,Ibis Mohammedia,1,positive
+918,3.0,Ibis Casa Voyageurs,3,neutral
+1900,1.5,Ibis Casablanca City Center,3,negative
+4993,4.0,Ibis Ouarzazate Centre,10,positive
+2591,5.0,Ibis El Jadida,11,positive
+3820,5.0,Ibis Marrakech Centre Gare,1,positive
+5275,2.0,Ibis Ouarzazate Centre,2,negative
+1630,4.5,Ibis Casablanca City Center,9,positive
+4057,0.5,Ibis Marrakech Centre Gare,1,negative
+517,5.0,Ibis Casa Sidi Maarouf,4,positive
+74,5.0,Ibis Abdelmoumen Casa,3,positive
+5001,4.0,Ibis Ouarzazate Centre,10,positive
+1452,3.0,Ibis Casablanca City Center,9,neutral
+2857,4.0,Ibis Fès,8,positive
+5065,5.0,Ibis Ouarzazate Centre,6,positive
+3901,1.0,Ibis Marrakech Centre Gare,5,negative
+5371,0.5,Ibis Ouarzazate Centre,1,negative
+4597,5.0,Ibis Marrakech Palmeraie,1,positive
+5589,4.0,Ibis Rabat Agdal,1,positive
+2916,5.0,Ibis Fès,2,positive
+4131,1.5,Ibis Marrakech Centre Gare,3,negative
+2468,3.0,Ibis El Jadida,3,neutral
+1338,3.0,Ibis Casablanca City Center,5,neutral
+3295,2.0,Ibis Marrakech Centre Gare,6,negative
+1026,4.0,Ibis Casa Voyageurs,3,positive
+4669,4.0,Ibis Meknès,4,positive
+3002,5.0,Ibis Fès,1,positive
+2073,2.0,Ibis Casablanca City Center,9,negative
+1511,1.0,Ibis Casablanca City Center,7,negative
+6093,3.0,Ibis Tanger City Center,2,neutral
+582,5.0,Ibis Casa Sidi Maarouf,9,positive
+5723,4.5,Ibis Rabat Agdal,1,positive
+5042,3.0,Ibis Ouarzazate Centre,9,neutral
+2704,2.0,Ibis Fès,3,negative
+4181,1.0,Ibis Marrakech Centre Gare,10,negative
+2761,4.0,Ibis Fès,9,positive
+1073,1.0,Ibis Casa Voyageurs,1,negative
+6356,3.0,Ibis Tanger City Center,4,neutral
+5355,4.5,Ibis Ouarzazate Centre,1,positive
+2096,5.0,Ibis Casablanca Nearshore,1,positive
+2188,3.5,Ibis Casablanca Nearshore,1,neutral
+5853,4.0,Ibis Tanger City Center,9,positive
+1493,2.0,Ibis Casablanca City Center,2,negative
+1925,5.0,Ibis Casablanca City Center,21,positive
+2625,4.0,Ibis El Jadida,3,positive
+4350,3.0,Ibis Marrakech Centre Gare,7,neutral
+2812,3.0,Ibis Fès,4,neutral
+1802,5.0,Ibis Casablanca City Center,4,positive
+282,4.0,Ibis Casa Sidi Maarouf,5,positive
+5899,5.0,Ibis Tanger City Center,4,positive
+3928,1.5,Ibis Marrakech Centre Gare,4,negative
+2987,3.5,Ibis Fès,1,neutral
+3005,5.0,Ibis Fès,2,positive
+3599,2.0,Ibis Marrakech Centre Gare,9,negative
+1781,4.0,Ibis Casablanca City Center,3,positive
+5267,4.0,Ibis Ouarzazate Centre,3,positive
+2352,4.0,Ibis Casablanca Nearshore,1,positive
+3655,3.0,Ibis Marrakech Centre Gare,5,neutral
+5819,4.0,Ibis Tanger City Center,8,positive
+5658,5.0,Ibis Rabat Agdal,3,positive
+3583,5.0,Ibis Marrakech Centre Gare,6,positive
+2212,5.0,Ibis Casablanca Nearshore,5,positive
+147,0.5,Ibis Abdelmoumen Casa,1,negative
+755,5.0,Ibis Casa Voyageurs,1,positive
+677,3.0,Ibis Casa Voyageurs,2,neutral
+4664,0.5,Ibis Meknès,1,negative
+3071,4.0,Ibis Fès,3,positive
+2018,4.5,Ibis Casablanca City Center,3,positive
+4374,3.0,Ibis Marrakech Palmeraie,3,neutral
+2226,3.0,Ibis Casablanca Nearshore,2,neutral
+2119,4.0,Ibis Casablanca Nearshore,2,positive
+2954,1.5,Ibis Fès,2,negative
+5346,4.0,Ibis Ouarzazate Centre,1,positive
+5998,3.0,Ibis Tanger City Center,7,neutral
+3866,5.0,Ibis Marrakech Centre Gare,6,positive
+4356,4.0,Ibis Marrakech Centre Gare,7,positive
+3519,2.0,Ibis Marrakech Centre Gare,6,negative
+3020,1.5,Ibis Fès,1,negative
+5396,3.0,Ibis Oujda,3,neutral
+4702,5.0,Ibis Meknès,2,positive
+1946,4.5,Ibis Casablanca City Center,2,positive
+3428,4.0,Ibis Marrakech Centre Gare,10,positive
+325,2.0,Ibis Casa Sidi Maarouf,26,negative
+3021,2.0,Ibis Fès,3,negative
+3291,5.0,Ibis Marrakech Centre Gare,3,positive
+744,4.0,Ibis Casa Voyageurs,2,positive
+3105,5.0,Ibis Fès,1,positive
+5707,5.0,Ibis Rabat Agdal,1,positive
+3902,2.0,Ibis Marrakech Centre Gare,1,negative
+3091,5.0,Ibis Fès,1,positive
+2933,5.0,Ibis Fès,4,positive
+2260,4.0,Ibis Casablanca Nearshore,6,positive
+2178,5.0,Ibis Casablanca Nearshore,1,positive
+4355,4.0,Ibis Marrakech Centre Gare,10,positive
+5728,3.0,Ibis Rabat Agdal,4,neutral
+4980,5.0,Ibis Ouarzazate Centre,22,positive
+1188,4.0,Ibis Casa Voyageurs,11,positive
+5908,1.0,Ibis Tanger City Center,1,negative
+5825,5.0,Ibis Tanger City Center,8,positive
+939,2.5,Ibis Casa Voyageurs,5,negative
+2045,3.5,Ibis Casablanca City Center,4,neutral
+3141,5.0,Ibis Fès,1,positive
+4438,5.0,Ibis Marrakech Palmeraie,1,positive
+392,5.0,Ibis Casa Sidi Maarouf,2,positive
+2517,2.0,Ibis El Jadida,4,negative
+2143,4.0,Ibis Casablanca Nearshore,4,positive
+5554,5.0,Ibis Rabat Agdal,1,positive
+5106,4.0,Ibis Ouarzazate Centre,8,positive
+6123,2.5,Ibis Tanger City Center,2,negative
+2832,3.0,Ibis Fès,18,neutral
+2509,5.0,Ibis El Jadida,3,positive
+4296,2.5,Ibis Marrakech Centre Gare,4,negative
+3063,4.5,Ibis Fès,5,positive
+4018,4.0,Ibis Marrakech Centre Gare,3,positive
+4784,2.0,Ibis Mohammedia,3,negative
+3467,4.0,Ibis Marrakech Centre Gare,10,positive
+5230,5.0,Ibis Ouarzazate Centre,5,positive
+3950,3.0,Ibis Marrakech Centre Gare,1,neutral
+4674,4.5,Ibis Meknès,1,positive
+5280,4.0,Ibis Ouarzazate Centre,6,positive
+4770,4.0,Ibis Mohammedia,1,positive
+598,5.0,Ibis Casa Sidi Maarouf,6,positive
+5047,4.0,Ibis Ouarzazate Centre,4,positive
+1958,2.0,Ibis Casablanca City Center,1,negative
+3596,1.0,Ibis Marrakech Centre Gare,6,negative
+2541,0.5,Ibis El Jadida,1,negative
+5636,3.5,Ibis Rabat Agdal,2,neutral
+997,3.5,Ibis Casa Voyageurs,5,neutral
+2160,4.0,Ibis Casablanca Nearshore,6,positive
+6416,2.0,Ibis Tanger City Center,2,negative
+2702,3.0,Ibis Fès,6,neutral
+3640,1.0,Ibis Marrakech Centre Gare,12,negative
+4369,3.0,Ibis Marrakech Palmeraie,7,neutral
+5236,4.0,Ibis Ouarzazate Centre,9,positive
+4789,3.5,Ibis Mohammedia,1,neutral
+4505,3.5,Ibis Marrakech Palmeraie,1,neutral
+3398,4.0,Ibis Marrakech Centre Gare,7,positive
+1412,3.0,Ibis Casablanca City Center,6,neutral
+4955,5.0,Ibis Mohammedia,6,positive
+5768,5.0,Ibis Rabat Agdal,4,positive
+2856,1.0,Ibis Fès,3,negative
+256,4.0,Ibis Casa Sidi Maarouf,4,positive
+2204,5.0,Ibis Casablanca Nearshore,12,positive
+2728,3.0,Ibis Fès,8,neutral
+2416,4.0,Ibis El Jadida,7,positive
+1175,4.0,Ibis Casa Voyageurs,6,positive
+4134,2.5,Ibis Marrakech Centre Gare,4,negative
+2823,4.0,Ibis Fès,3,positive
+165,5.0,Ibis Abdelmoumen Casa,11,positive
+352,1.0,Ibis Casa Sidi Maarouf,5,negative
+6229,0.5,Ibis Tanger City Center,2,negative
+3059,3.5,Ibis Fès,4,neutral
+1928,0.5,Ibis Casablanca City Center,6,negative
+2385,3.0,Ibis El Jadida,6,neutral
+783,4.0,Ibis Casa Voyageurs,8,positive
+3147,3.5,Ibis Fès,1,neutral
+2474,5.0,Ibis El Jadida,9,positive
+6312,0.5,Ibis Tanger City Center,1,negative
+1981,5.0,Ibis Casablanca City Center,9,positive
+39,4.0,Ibis Abdelmoumen Casa,10,positive
+3233,3.0,Ibis Marrakech Centre Gare,15,neutral
+1731,5.0,Ibis Casablanca City Center,2,positive
+2431,5.0,Ibis El Jadida,6,positive
+5100,3.0,Ibis Ouarzazate Centre,5,neutral
+5983,3.0,Ibis Tanger City Center,4,neutral
+2833,4.0,Ibis Fès,13,positive
+3391,5.0,Ibis Marrakech Centre Gare,5,positive
+2027,5.0,Ibis Casablanca City Center,6,positive
+5152,4.0,Ibis Ouarzazate Centre,1,positive
+408,4.0,Ibis Casa Sidi Maarouf,5,positive
+2944,5.0,Ibis Fès,2,positive
+1269,1.0,Ibis Casablanca City Center,8,negative
+2603,5.0,Ibis El Jadida,8,positive
+428,4.0,Ibis Casa Sidi Maarouf,1,positive
+1131,4.0,Ibis Casa Voyageurs,4,positive
+3060,3.5,Ibis Fès,1,neutral
+5279,4.0,Ibis Ouarzazate Centre,5,positive
+3918,5.0,Ibis Marrakech Centre Gare,1,positive
+1530,4.0,Ibis Casablanca City Center,3,positive
+521,5.0,Ibis Casa Sidi Maarouf,1,positive
+438,5.0,Ibis Casa Sidi Maarouf,5,positive
+1335,3.0,Ibis Casablanca City Center,10,neutral
+2995,5.0,Ibis Fès,1,positive
+6005,1.0,Ibis Tanger City Center,1,negative
+3137,3.5,Ibis Fès,13,neutral
+2402,4.0,Ibis El Jadida,5,positive
+2310,0.5,Ibis Casablanca Nearshore,8,negative
+6242,4.0,Ibis Tanger City Center,1,positive
+4742,4.0,Ibis Meknès,15,positive
+466,2.0,Ibis Casa Sidi Maarouf,2,negative
+714,5.0,Ibis Casa Voyageurs,15,positive
+2981,1.5,Ibis Fès,2,negative
+5026,4.0,Ibis Ouarzazate Centre,8,positive
+1169,2.0,Ibis Casa Voyageurs,8,negative
+5559,5.0,Ibis Rabat Agdal,6,positive
+5992,5.0,Ibis Tanger City Center,4,positive
+5237,5.0,Ibis Ouarzazate Centre,2,positive
+2891,3.0,Ibis Fès,2,neutral
+5451,4.0,Ibis Oujda,2,positive
+5342,3.0,Ibis Ouarzazate Centre,1,neutral
+882,4.5,Ibis Casa Voyageurs,1,positive
+5958,3.0,Ibis Tanger City Center,3,neutral
+5884,3.0,Ibis Tanger City Center,7,neutral
+2344,5.0,Ibis Casablanca Nearshore,3,positive
+3304,5.0,Ibis Marrakech Centre Gare,7,positive
+3006,5.0,Ibis Fès,4,positive
+2494,5.0,Ibis El Jadida,1,positive
+313,5.0,Ibis Casa Sidi Maarouf,3,positive
+4213,3.5,Ibis Marrakech Centre Gare,1,neutral
+4189,1.0,Ibis Marrakech Centre Gare,1,negative
+1677,3.5,Ibis Casablanca City Center,6,neutral
+3095,4.0,Ibis Fès,1,positive
+686,3.0,Ibis Casa Voyageurs,3,neutral
+575,5.0,Ibis Casa Sidi Maarouf,3,positive
+88,4.0,Ibis Abdelmoumen Casa,6,positive
+496,5.0,Ibis Casa Sidi Maarouf,1,positive
+5795,5.0,Ibis Rabat Agdal,1,positive
+198,4.0,Ibis Abdelmoumen Casa,1,positive
+2785,4.0,Ibis Fès,4,positive
+4176,2.0,Ibis Marrakech Centre Gare,2,negative
+477,5.0,Ibis Casa Sidi Maarouf,8,positive
+3887,4.0,Ibis Marrakech Centre Gare,1,positive
+4647,4.0,Ibis Meknès,4,positive
+1087,5.0,Ibis Casa Voyageurs,8,positive
+5691,5.0,Ibis Rabat Agdal,2,positive
+5388,4.0,Ibis Oujda,2,positive
+4890,5.0,Ibis Mohammedia,6,positive
+4307,3.0,Ibis Marrakech Centre Gare,2,neutral
+3208,3.0,Ibis Marrakech Centre Gare,13,neutral
+736,5.0,Ibis Casa Voyageurs,4,positive
+3788,5.0,Ibis Marrakech Centre Gare,3,positive
+5627,3.0,Ibis Rabat Agdal,1,neutral
+4208,1.5,Ibis Marrakech Centre Gare,1,negative
+2312,1.5,Ibis Casablanca Nearshore,4,negative
+1084,4.0,Ibis Casa Voyageurs,6,positive
+5302,3.5,Ibis Ouarzazate Centre,4,neutral
+6032,4.0,Ibis Tanger City Center,8,positive
+5037,4.0,Ibis Ouarzazate Centre,8,positive
+5449,5.0,Ibis Oujda,6,positive
+3830,5.0,Ibis Marrakech Centre Gare,1,positive
+1079,3.0,Ibis Casa Voyageurs,7,neutral
+703,5.0,Ibis Casa Voyageurs,6,positive
+3245,4.0,Ibis Marrakech Centre Gare,11,positive
+3959,1.0,Ibis Marrakech Centre Gare,4,negative
+2622,4.0,Ibis El Jadida,6,positive
+4151,5.0,Ibis Marrakech Centre Gare,2,positive
+4361,5.0,Ibis Marrakech Centre Gare,19,positive
+1307,3.0,Ibis Casablanca City Center,7,neutral
+6179,2.0,Ibis Tanger City Center,5,negative
+518,5.0,Ibis Casa Sidi Maarouf,7,positive
+4386,1.0,Ibis Marrakech Palmeraie,2,negative
+5352,3.5,Ibis Ouarzazate Centre,2,neutral
+4332,0.5,Ibis Marrakech Centre Gare,2,negative
+4959,5.0,Ibis Mohammedia,6,positive
+5151,4.0,Ibis Ouarzazate Centre,1,positive
+2249,5.0,Ibis Casablanca Nearshore,2,positive
+1760,3.0,Ibis Casablanca City Center,3,neutral
+5434,2.0,Ibis Oujda,4,negative
+6040,5.0,Ibis Tanger City Center,7,positive
+5740,4.5,Ibis Rabat Agdal,1,positive
+3164,3.5,Ibis Fès,7,neutral
+715,5.0,Ibis Casa Voyageurs,2,positive
+2613,5.0,Ibis El Jadida,3,positive
+2632,2.5,Ibis El Jadida,1,negative
+525,5.0,Ibis Casa Sidi Maarouf,4,positive
+5757,3.5,Ibis Rabat Agdal,7,neutral
+872,4.0,Ibis Casa Voyageurs,4,positive
+247,2.5,Ibis Abdelmoumen Casa,3,negative
+4836,5.0,Ibis Mohammedia,9,positive
+1137,5.0,Ibis Casa Voyageurs,1,positive
+5220,4.0,Ibis Ouarzazate Centre,3,positive
+5829,4.0,Ibis Tanger City Center,4,positive
+5601,2.5,Ibis Rabat Agdal,4,negative
+2246,3.5,Ibis Casablanca Nearshore,2,neutral
+834,4.5,Ibis Casa Voyageurs,2,positive
+5647,0.5,Ibis Rabat Agdal,1,negative
+5557,4.0,Ibis Rabat Agdal,2,positive
+4250,5.0,Ibis Marrakech Centre Gare,1,positive
+1274,3.0,Ibis Casablanca City Center,2,neutral
+5130,1.0,Ibis Ouarzazate Centre,1,negative
+2033,3.0,Ibis Casablanca City Center,2,neutral
+4411,4.0,Ibis Marrakech Palmeraie,4,positive
+3796,2.0,Ibis Marrakech Centre Gare,10,negative
+4156,1.0,Ibis Marrakech Centre Gare,8,negative
+1574,2.5,Ibis Casablanca City Center,2,negative
+1155,1.5,Ibis Casa Voyageurs,5,negative
+4363,1.0,Ibis Marrakech Palmeraie,11,negative
+4924,3.5,Ibis Mohammedia,1,neutral
+707,1.0,Ibis Casa Voyageurs,8,negative
+2705,4.0,Ibis Fès,6,positive
+2680,2.5,Ibis El Jadida,1,negative
+2287,4.5,Ibis Casablanca Nearshore,2,positive
+874,4.5,Ibis Casa Voyageurs,6,positive
+3937,0.5,Ibis Marrakech Centre Gare,1,negative
+2787,3.0,Ibis Fès,5,neutral
+2248,4.5,Ibis Casablanca Nearshore,1,positive
+4528,4.0,Ibis Marrakech Palmeraie,3,positive
+330,5.0,Ibis Casa Sidi Maarouf,3,positive
+3775,5.0,Ibis Marrakech Centre Gare,6,positive
+143,3.5,Ibis Abdelmoumen Casa,1,neutral
+4689,4.0,Ibis Meknès,3,positive
+3496,2.0,Ibis Marrakech Centre Gare,4,negative
+4807,5.0,Ibis Mohammedia,1,positive
+2417,3.0,Ibis El Jadida,7,neutral
+5544,4.0,Ibis Rabat Agdal,2,positive
+6143,0.5,Ibis Tanger City Center,2,negative
+6377,4.0,Ibis Tanger City Center,5,positive
+3904,5.0,Ibis Marrakech Centre Gare,1,positive
+609,2.0,Ibis Casa Sidi Maarouf,8,negative
+58,1.0,Ibis Abdelmoumen Casa,1,negative
+963,5.0,Ibis Casa Voyageurs,1,positive
+6420,3.0,Ibis Tanger City Center,3,neutral
+3538,3.0,Ibis Marrakech Centre Gare,7,neutral
+3764,1.0,Ibis Marrakech Centre Gare,10,negative
+1201,4.0,Ibis Casa Voyageurs,3,positive
+4567,1.0,Ibis Marrakech Palmeraie,3,negative
+2209,3.5,Ibis Casablanca Nearshore,1,neutral
+1834,2.0,Ibis Casablanca City Center,11,negative
+3881,1.0,Ibis Marrakech Centre Gare,8,negative
+4856,5.0,Ibis Mohammedia,1,positive
+5012,3.0,Ibis Ouarzazate Centre,6,neutral

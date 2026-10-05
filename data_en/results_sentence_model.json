@@ -1,0 +1,17 @@
+{
+  "unit": "sentence",
+  "rollup": "majority vote per review",
+  "sentences_train": 19422,
+  "review_holdout": {
+    "accuracy": 0.591,
+    "macro_f1": 0.5227
+  },
+  "probe": "7/8",
+  "superseded": {
+    "review_level_star_labels": {
+      "macro_f1": 0.6258,
+      "probe": "6/8"
+    }
+  },
+  "size_mb": 0.64
+}

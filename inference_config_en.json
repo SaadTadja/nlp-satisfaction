@@ -35,5 +35,15 @@
   "rejected_alternative": {
     "name": "binary + fitted band",
     "holdout_macro_f1": 0.5875
+  },
+  "sentence_model_repo": "D:\\NLP Analyse de sentiment\\data_en\\model_en_sentence.joblib",
+  "sentence_class_order": [
+    "negative",
+    "neutral",
+    "positive"
+  ],
+  "notes": {
+    "review_model": "trained on review-level text with star labels; best on the review task (macro-F1 0.6258) but learned star correlations, so it is weak on clean standalone prose (probe 6/8)",
+    "sentence_model": "trained on sentence-level machine labels; worse at the review task when rolled up (0.5227) but behaves correctly on prose (probe 7/8). Used for the aspect layer, which is sentence-level by construction."
   }
 }
