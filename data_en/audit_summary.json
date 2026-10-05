@@ -1,0 +1,21 @@
+{
+  "source_file": "df_final_absa_v4.csv",
+  "language": "English",
+  "sentences_en": 32625,
+  "reviews": 5872,
+  "label_counts": {
+    "positive": 3045,
+    "negative": 1531,
+    "neutral": 1296
+  },
+  "splits": {
+    "train": 3523,
+    "calib": 587,
+    "hold": 587,
+    "test": 1175
+  },
+  "words_p50": 31.0,
+  "words_p90": 100.0,
+  "auto_sentiment_agreement": 0.6252,
+  "normalize_version": "v1"
+}

@@ -25,3 +25,6 @@ Thumbs.db
 # NOTE: notebook outputs are deliberately NOT stripped (§2.5). GitHub renders
 # executed notebooks, so a reader sees the figures without running anything.
 # Do not add nbstripout.
+
+# raw source datasets - too large for git (233 MB + 25 MB)
+dataset for training in ENGLISH/

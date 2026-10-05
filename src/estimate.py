@@ -40,6 +40,10 @@ __all__ = [
     "acc_prevalence",
     "estimate_with_ci",
     "resample_to_prevalence",
+    "confusion_matrix_rates",
+    "predicted_distribution",
+    "acc_prevalence_multiclass",
+    "project_to_simplex",
 ]
 
 
@@ -205,6 +209,106 @@ def estimate_with_ci(
 
     lo, hi = np.percentile(draws[:kept], [100 * alpha / 2, 100 * (1 - alpha / 2)])
     return SatisfactionEstimate(point, float(lo), float(hi), naive, n)
+
+
+# --------------------------------------------------------------------------
+# Multiclass generalisation
+#
+# The two-class formula above is the special case of a general relation: the
+# distribution of *predicted* labels is the confusion matrix times the
+# distribution of *true* labels,
+#
+#     p_hat = M @ p        where  M[i, j] = P(predict i | true j)
+#
+# so the correction is a linear solve rather than a ratio. This is needed the
+# moment a dataset has a real neutral class instead of a binary split.
+# --------------------------------------------------------------------------
+
+
+def confusion_matrix_rates(y_true, y_pred, labels) -> np.ndarray:
+    """Column-stochastic confusion matrix ``M[i, j] = P(predict i | true j)``.
+
+    Note the orientation: **columns** are the true class and sum to 1. This is
+    the transpose of sklearn's ``confusion_matrix`` convention, and it is the
+    one that makes ``p_hat = M @ p`` hold.
+
+    Raises if any true class is absent from the holdout — its column would be
+    undefined, and the solve would silently produce nonsense.
+    """
+    y_true, y_pred, labels = np.asarray(y_true), np.asarray(y_pred), list(labels)
+    k = len(labels)
+    M = np.zeros((k, k), dtype=float)
+    for j, true_lab in enumerate(labels):
+        mask = y_true == true_lab
+        if not mask.any():
+            raise ValueError(
+                f"class {true_lab!r} does not appear in the holdout; "
+                "its confusion column cannot be estimated"
+            )
+        for i, pred_lab in enumerate(labels):
+            M[i, j] = (y_pred[mask] == pred_lab).mean()
+    return M
+
+
+def predicted_distribution(y_pred, labels) -> np.ndarray:
+    """Share of predictions falling in each label — the multiclass ``p_hat``.
+
+    This is multiclass Classify-and-Count: biased in exactly the same way as
+    the binary version, and reported alongside the correction for comparison.
+    """
+    y_pred = np.asarray(y_pred)
+    n = len(y_pred)
+    if n == 0:
+        raise ValueError("no predictions to summarise")
+    return np.array([(y_pred == lab).mean() for lab in labels], dtype=float)
+
+
+def project_to_simplex(v: np.ndarray) -> np.ndarray:
+    """Nearest point to ``v`` on the probability simplex (Euclidean).
+
+    The linear solve can land slightly outside the simplex — small negative
+    entries, or a sum a little off 1 — because ``p_hat`` is a noisy estimate.
+    Clipping at zero and renormalising is the common shortcut but is not the
+    nearest valid point; this is, and it costs eight lines.
+    """
+    v = np.asarray(v, dtype=float).ravel()
+    n = v.size
+    u = np.sort(v)[::-1]
+    css = np.cumsum(u)
+    rho = np.nonzero(u * np.arange(1, n + 1) > (css - 1))[0][-1]
+    theta = (css[rho] - 1) / (rho + 1.0)
+    return np.maximum(v - theta, 0.0)
+
+
+def acc_prevalence_multiclass(
+    pred_dist: np.ndarray, M: np.ndarray, rcond: float = 1e-10
+) -> np.ndarray:
+    """Bias-corrected class prevalences: solve ``p_hat = M @ p`` for ``p``.
+
+    Falls back to a least-squares solve when ``M`` is singular or
+    ill-conditioned — which happens when two classes are confused so heavily
+    that they are not separable. The result is projected onto the simplex so
+    it is always a valid distribution.
+
+    A badly conditioned ``M`` is worth noticing rather than silently
+    absorbing: it means the correction is extrapolating from a classifier that
+    cannot really tell those classes apart, and the output deserves wide error
+    bars.
+    """
+    pred_dist = np.asarray(pred_dist, dtype=float).ravel()
+    M = np.asarray(M, dtype=float)
+    if M.shape[0] != M.shape[1] or M.shape[0] != pred_dist.size:
+        raise ValueError("M must be square and match the length of pred_dist")
+
+    try:
+        cond = np.linalg.cond(M)
+    except np.linalg.LinAlgError:
+        cond = np.inf
+    if not np.isfinite(cond) or cond > 1.0 / rcond:
+        p, *_ = np.linalg.lstsq(M, pred_dist, rcond=None)
+    else:
+        p = np.linalg.solve(M, pred_dist)
+    return project_to_simplex(p)
 
 
 def resample_to_prevalence(

@@ -19,9 +19,13 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from src.estimate import (  # noqa: E402
     acc_prevalence,
+    acc_prevalence_multiclass,
     classify_and_count,
+    confusion_matrix_rates,
     confusion_rates,
     estimate_with_ci,
+    predicted_distribution,
+    project_to_simplex,
     resample_to_prevalence,
 )
 
@@ -200,3 +204,103 @@ def test_resample_exceeds_minority_class_size():
 def test_resample_rejects_bad_target():
     with pytest.raises(ValueError):
         resample_to_prevalence([0, 1], 1.5)
+
+
+# --------------------------------------------------------------------------
+# Multiclass correction
+# --------------------------------------------------------------------------
+
+LABELS = ["negative", "neutral", "positive"]
+
+
+def simulate_multiclass(true_dist, n, M, rng):
+    """Draw n items with the given true distribution, then corrupt the labels
+    through confusion matrix M (columns = true class)."""
+    y_true = rng.choice(len(LABELS), size=n, p=true_dist)
+    y_pred = np.array([rng.choice(len(LABELS), p=M[:, t]) for t in y_true])
+    return np.array(LABELS)[y_true], np.array(LABELS)[y_pred]
+
+
+# A realistic 3-class confusion: neutral is the hardest class and leaks both
+# ways, which is exactly the regime where naive counting goes wrong.
+M_TRUE = np.array([
+    [0.85, 0.15, 0.03],   # predicted negative
+    [0.10, 0.70, 0.12],   # predicted neutral
+    [0.05, 0.15, 0.85],   # predicted positive
+])
+
+
+def test_multiclass_acc_beats_counting():
+    rng = np.random.default_rng(0)
+    true_dist = np.array([0.25, 0.20, 0.55])
+    y_true, y_pred = simulate_multiclass(true_dist, 40_000, M_TRUE, rng)
+
+    M = confusion_matrix_rates(y_true, y_pred, LABELS)
+    cc = predicted_distribution(y_pred, LABELS)
+    acc = acc_prevalence_multiclass(cc, M)
+
+    assert np.abs(acc - true_dist).mean() < 0.01
+    assert np.abs(cc - true_dist).mean() > 0.02
+    assert np.abs(acc - true_dist).mean() < np.abs(cc - true_dist).mean() / 3
+
+
+def test_multiclass_inverts_the_forward_relation_exactly():
+    """With exact rates and no sampling noise, the solve must be exact."""
+    for p in ([0.2, 0.3, 0.5], [0.0, 0.0, 1.0], [0.6, 0.1, 0.3]):
+        p = np.array(p)
+        p_hat = M_TRUE @ p
+        rec = acc_prevalence_multiclass(p_hat, M_TRUE)
+        assert np.allclose(rec, p, atol=1e-8)
+
+
+def test_confusion_matrix_columns_sum_to_one():
+    rng = np.random.default_rng(1)
+    y_true, y_pred = simulate_multiclass([0.3, 0.3, 0.4], 20_000, M_TRUE, rng)
+    M = confusion_matrix_rates(y_true, y_pred, LABELS)
+    assert np.allclose(M.sum(axis=0), 1.0)
+    assert np.allclose(M, M_TRUE, atol=0.02)
+
+
+def test_confusion_matrix_needs_every_true_class():
+    with pytest.raises(ValueError, match="does not appear"):
+        confusion_matrix_rates(
+            np.array(["negative", "positive"]), np.array(["negative", "positive"]), LABELS
+        )
+
+
+def test_result_is_always_a_valid_distribution():
+    """Noisy inputs can push the raw solve off the simplex; the output must
+    still be a probability vector."""
+    rng = np.random.default_rng(2)
+    for _ in range(50):
+        noisy = rng.dirichlet(np.ones(3))
+        out = acc_prevalence_multiclass(noisy, M_TRUE)
+        assert np.all(out >= 0) and out.sum() == pytest.approx(1.0)
+
+
+def test_singular_matrix_falls_back_to_least_squares():
+    """Two indistinguishable classes make M singular — it must not raise."""
+    M_sing = np.array([[0.5, 0.5, 0.0], [0.5, 0.5, 0.0], [0.0, 0.0, 1.0]])
+    out = acc_prevalence_multiclass(np.array([0.3, 0.3, 0.4]), M_sing)
+    assert np.all(out >= 0) and out.sum() == pytest.approx(1.0)
+
+
+def test_simplex_projection_is_identity_on_valid_input():
+    v = np.array([0.2, 0.3, 0.5])
+    assert np.allclose(project_to_simplex(v), v)
+
+
+def test_simplex_projection_handles_negatives():
+    out = project_to_simplex(np.array([-0.2, 0.4, 0.8]))
+    assert np.all(out >= 0) and out.sum() == pytest.approx(1.0)
+
+
+def test_multiclass_agrees_with_binary_formula():
+    """The 2-class case of the general solve must reproduce acc_prevalence."""
+    tpr, fpr = 0.94, 0.06
+    M = np.array([[1 - fpr, 1 - tpr], [fpr, tpr]])   # labels: [neg, pos]
+    for p in (0.1, 0.35, 0.8):
+        p_hat = tpr * p + fpr * (1 - p)
+        binary = acc_prevalence(p_hat, tpr, fpr)
+        multi = acc_prevalence_multiclass(np.array([1 - p_hat, p_hat]), M)
+        assert multi[1] == pytest.approx(binary, abs=1e-8)
