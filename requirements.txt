@@ -1,29 +1,44 @@
-# Direct dependencies only. Pin each to an exact version after the first
-# successful run on Kaggle (§2.3), then commit the full `pip freeze` as
-# requirements-full.txt for exact reproduction.
+# Direct dependencies, pinned to the versions this project was built and
+# measured on (§2.3). Captured 2026-10-05 on Python 3.14.5.
 #
-#   python -m pip freeze > requirements-full.txt
+# The full resolved environment is in requirements-full.txt.
 #
-# Recorded Python version: <fill from sys.version on day 1>
+# Note: transformers 5.x and datasets 5.x are newer than the book's examples.
+# Two renames you will hit coming from book-era code:
+#   TrainingArguments(evaluation_strategy=) -> eval_strategy=
+#   Trainer(tokenizer=)                     -> processing_class=
+# And the dataset id needs its namespace: "tblard/allocine", not "allocine".
 
-torch
-transformers
-datasets
-accelerate
-tokenizers
+# --- core: the served pipeline and all 57 tests run on these alone ---
+numpy==2.4.6
+scikit-learn==1.8.0
+scipy==1.17.1
+joblib==1.5.3
+pandas==2.3.3
 
-# CamemBERT and XLM-R are SentencePiece-based. Missing either of these gives a
-# confusing mid-notebook ImportError during tokenizer conversion (§2.2).
-sentencepiece
-protobuf
+# --- data loading ---
+datasets==5.0.1
+huggingface-hub==1.33.0
+pyarrow==24.0.0
 
-# Metrics come from scikit-learn, not `evaluate`: `evaluate` downloads metric
-# scripts from the Hub at call time, which puts a network dependency inside
-# the eval loop and breaks offline and inside a Space.
-scikit-learn
-numpy
-pandas
-matplotlib
+# --- tokenisers; needed for the length audit and the transformer backend ---
+# transformers works without torch for tokeniser-only use, which is how the
+# audit measures token lengths on a machine with no deep-learning stack.
+transformers==5.18.0
+tokenizers==0.23.2
+sentencepiece==0.2.2
+protobuf==6.33.6
 
-wandb
-pytest
+# --- figures and demo ---
+matplotlib==3.10.9
+gradio==6.29.1
+
+# --- tests ---
+pytest==9.1.1
+
+# --- NOT pinned here, deliberately ---
+# torch: only the TransformerBackend needs it, and the right build depends on
+#   the machine (CUDA on Kaggle, +cpu wheel on a Space). Installing it here
+#   would pull ~2.5 GB that the TF-IDF backbone never touches.
+#   Kaggle: preinstalled.  Space: see space/requirements.txt.
+# wandb: only for the GPU training runs (§2.4). Add when you get there.

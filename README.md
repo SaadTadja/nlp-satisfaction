@@ -2,7 +2,7 @@
 
 Estimate **how satisfied clients are** from their written French feedback — with an honest error bar — and identify **what they are unsatisfied about**.
 
-> **Status: working end to end.** Every phase from data audit to running demo is executed and measured. The backbone is currently **TF-IDF + LogisticRegression** (0.9286 macro-F1), not a transformer — CamemBERT needs a GPU and is a drop-in swap (see [Swapping the backbone](#swapping-the-backbone)).
+> **Status: v1 complete and measured on the held-out test split.** Every phase from data audit to running demo is executed. The backbone is **TF-IDF + LogisticRegression**, not a transformer — CamemBERT needs a GPU and is a drop-in swap (see [Swapping the backbone](#swapping-the-backbone)), which would be v2 with its own disclosed evaluation.
 
 ---
 
@@ -103,7 +103,52 @@ Temperature came out **T = 0.6268**, i.e. **below 1**. The spec predicted T > 1 
 
 A 33-point gap. The band is not discarding good predictions — it isolates items where the model is barely better than a coin flip.
 
-**Aggregate estimation (§10):** CC MAE 0.0195 → ACC MAE 0.0058, 3.3× better. All tested confidence intervals contained the true rate.
+**Aggregate estimation (§10), validation:** CC MAE 0.0195 → ACC MAE 0.0058, 3.3× better.
+
+---
+
+## Final evaluation — v1, test split, measured once
+
+The test split was held back through every phase and read by exactly one notebook, [`08_final_test`](notebooks/08_final_test.ipynb), with the model, temperature, band and error rates all frozen beforehand.
+
+| Slice | n | Accuracy | Macro-F1 |
+|---|---|---|---|
+| Test, forced choice | 20,000 | 0.9201 | 0.9195 |
+| Test, deduplicated | 19,961 | 0.9199 | 0.9194 |
+| Test, confident only | 18,079 | **0.9612** | **0.9611** |
+| Test, dedup + confident | 18,041 | 0.9611 | 0.9610 |
+
+Validation was 0.9286 macro-F1, so the honest generalisation gap is **0.9 points** — small, and in the expected direction.
+
+**Three things this run settled:**
+
+**The leakage was real but immaterial.** 46 cross-split duplicates sounded alarming in the audit; removing them moves macro-F1 by 0.0001. Worth having checked, worth reporting as a non-finding rather than leaving as a vague worry.
+
+**The neutral band generalises — and then some.** Fitted on validation, applied unseen to test:
+
+| | Validation | Test |
+|---|---|---|
+| Accuracy outside band | 0.9610 | 0.9612 |
+| Accuracy inside band | 0.6310 | **0.5336** |
+
+Inside the band the model is at **coin-flip accuracy on 9.6% of reviews**. It is not discarding good predictions; it is declining to guess on cases it genuinely cannot read. That is the clearest validation of the §4.1 polarity-hole finding in the whole project.
+
+**The correction transfers.** `TPR`/`FPR` were measured on the validation holdout and applied, unchanged, to test:
+
+| | Validation | Test |
+|---|---|---|
+| Classify-and-Count MAE | 0.0195 | 0.0194 |
+| Adjusted CC MAE | 0.0058 | **0.0018** |
+| Improvement | 3.3× | **10.5×** |
+| CI coverage | — | **9 / 9** |
+
+Nine prevalence levels from 10% to 90%; every reported interval contained the true rate. Constants fitted on one sample de-bias a different one — which is the whole claim, tested where it counts.
+
+![CC vs ACC on test](data/fig_test_cc_vs_acc.png)
+
+> **On "measured once" when the backbone will change.** This is the single final evaluation of **v1**. If CamemBERT is trained later, that is v2 and gets its own single evaluation, labelled as such. The methodological sin is undisclosed repeated peeking; two disclosed versions, each measured once, is how any paper with a v2 works. The cost, stated plainly: v2 will not be fully blind, since v1's test number will be known when it is produced.
+
+---
 
 **Real client feedback (n=300, hand-labelled):** *pending — see [What's left](#whats-left).*
 
@@ -214,7 +259,7 @@ The pure-numpy modules (`normalize`, `estimate`, `aspects`) and all 57 tests run
 
 | | Blocker |
 |---|---|
-| CamemBERT / XLM-R / zero-shot / nlptown | GPU — Kaggle T4, ~4 h |
+| CamemBERT / XLM-R / zero-shot / nlptown | GPU — Kaggle T4, ~4 h. Would be **v2** |
 | 300 hand-labelled real comments (§6) | **You.** The phase's value comes from *you* labelling blind with a second annotator; if it were auto-labelled the κ figure would be meaningless |
 | Re-fit the neutral band on 3-class labels | Depends on the above — current thresholds are set by target abstention rate and are **provisional** |
 | Final test-set run | Last, once everything else is frozen |

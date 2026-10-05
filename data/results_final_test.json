@@ -1,0 +1,40 @@
+{
+  "test (raw, forced choice)": {
+    "n": 20000,
+    "accuracy": 0.9201,
+    "macro_f1": 0.9195
+  },
+  "test (deduplicated, forced)": {
+    "n": 19961,
+    "accuracy": 0.9199,
+    "macro_f1": 0.9194
+  },
+  "test (confident only)": {
+    "n": 18079,
+    "accuracy": 0.9612,
+    "macro_f1": 0.9611
+  },
+  "test (dedup + confident)": {
+    "n": 18041,
+    "accuracy": 0.9611,
+    "macro_f1": 0.961
+  },
+  "band": {
+    "acc_outside": 0.9612,
+    "acc_inside": 0.5336,
+    "abstain_rate": 0.096
+  },
+  "aggregate": {
+    "cc_mae": 0.0194,
+    "acc_mae": 0.0018,
+    "improvement_x": 10.5
+  },
+  "ci_coverage": "9/9",
+  "_meta": {
+    "version": "v1-tfidf",
+    "revision": "local-tfidf-v1",
+    "backend": "sklearn",
+    "test_rows": 20000,
+    "test_rows_dedup": 19961
+  }
+}
