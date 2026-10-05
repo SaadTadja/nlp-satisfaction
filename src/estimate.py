@@ -44,6 +44,7 @@ __all__ = [
     "predicted_distribution",
     "acc_prevalence_multiclass",
     "project_to_simplex",
+    "resample_to_distribution",
 ]
 
 
@@ -309,6 +310,48 @@ def acc_prevalence_multiclass(
     else:
         p = np.linalg.solve(M, pred_dist)
     return project_to_simplex(p)
+
+
+def resample_to_distribution(
+    y_true, target_dist, labels, n: int | None = None, seed: int = 0
+) -> np.ndarray:
+    """Indices of a resample whose class mix matches ``target_dist``.
+
+    The multiclass counterpart of :func:`resample_to_prevalence`, and the thing
+    that drives the headline experiment: sweep the true class mix, then compare
+    naive counting against the correction at each point.
+
+    Sampling is with replacement, so a target can exceed the natural size of a
+    class — necessary when testing mixes far from the observed one, which is
+    exactly where naive counting fails worst.
+    """
+    y_true = np.asarray(y_true)
+    labels = list(labels)
+    target = np.asarray(target_dist, dtype=float).ravel()
+    if target.size != len(labels):
+        raise ValueError("target_dist must have one entry per label")
+    if np.any(target < 0) or not np.isclose(target.sum(), 1.0):
+        raise ValueError("target_dist must be non-negative and sum to 1")
+
+    if n is None:
+        n = len(y_true)
+    rng = np.random.default_rng(seed)
+
+    counts = np.floor(target * n).astype(int)
+    counts[np.argmax(target)] += n - counts.sum()      # absorb rounding
+
+    parts = []
+    for lab, k in zip(labels, counts):
+        if k == 0:
+            continue
+        pool = np.flatnonzero(y_true == lab)
+        if pool.size == 0:
+            raise ValueError(f"no examples of class {lab!r} available to resample")
+        parts.append(rng.choice(pool, k, replace=True))
+
+    out = np.concatenate(parts)
+    rng.shuffle(out)
+    return out
 
 
 def resample_to_prevalence(

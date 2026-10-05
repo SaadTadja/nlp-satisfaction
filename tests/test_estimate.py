@@ -26,6 +26,7 @@ from src.estimate import (  # noqa: E402
     estimate_with_ci,
     predicted_distribution,
     project_to_simplex,
+    resample_to_distribution,
     resample_to_prevalence,
 )
 
@@ -293,6 +294,30 @@ def test_simplex_projection_is_identity_on_valid_input():
 def test_simplex_projection_handles_negatives():
     out = project_to_simplex(np.array([-0.2, 0.4, 0.8]))
     assert np.all(out >= 0) and out.sum() == pytest.approx(1.0)
+
+
+def test_resample_to_distribution_hits_target():
+    y = np.array(["negative"] * 300 + ["neutral"] * 200 + ["positive"] * 500)
+    for target in ([0.2, 0.3, 0.5], [0.8, 0.1, 0.1], [0.0, 0.0, 1.0]):
+        idx = resample_to_distribution(y, target, LABELS, n=2000, seed=5)
+        got = predicted_distribution(y[idx], LABELS)
+        assert len(idx) == 2000
+        assert np.allclose(got, target, atol=0.002)
+
+
+def test_resample_to_distribution_exceeds_class_size():
+    """With-replacement sampling must allow a target above the natural size."""
+    y = np.array(["negative"] * 20 + ["neutral"] * 20 + ["positive"] * 960)
+    idx = resample_to_distribution(y, [0.6, 0.2, 0.2], LABELS, n=1000, seed=6)
+    assert np.allclose(predicted_distribution(y[idx], LABELS), [0.6, 0.2, 0.2], atol=.002)
+
+
+def test_resample_to_distribution_validates_input():
+    y = np.array(["negative", "positive"])
+    with pytest.raises(ValueError, match="sum to 1"):
+        resample_to_distribution(y, [0.5, 0.2, 0.2], LABELS)
+    with pytest.raises(ValueError, match="one entry per label"):
+        resample_to_distribution(y, [0.5, 0.5], LABELS)
 
 
 def test_multiclass_agrees_with_binary_formula():

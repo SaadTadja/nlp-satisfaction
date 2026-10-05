@@ -1,0 +1,94 @@
+{
+  "spearman_vs_star": 0.9545,
+  "p_value": 4.988898739949761e-06,
+  "aspects": [
+    {
+      "aspect": "Confort thermique / Température",
+      "sentences": 1068,
+      "count_pos": 0.0787,
+      "corrected_pos": 0.0,
+      "corrected_neg": 1.0,
+      "mean_star": 2.8418
+    },
+    {
+      "aspect": "Bruit & Qualité du sommeil",
+      "sentences": 846,
+      "count_pos": 0.1336,
+      "corrected_pos": 0.0792,
+      "corrected_neg": 0.9208,
+      "mean_star": 2.9622
+    },
+    {
+      "aspect": "Rapport qualité-prix",
+      "sentences": 615,
+      "count_pos": 0.4016,
+      "corrected_pos": 0.295,
+      "corrected_neg": 0.0948,
+      "mean_star": 3.4902
+    },
+    {
+      "aspect": "Chambre & Propreté",
+      "sentences": 10542,
+      "count_pos": 0.3184,
+      "corrected_pos": 0.341,
+      "corrected_neg": 0.659,
+      "mean_star": 3.2449
+    },
+    {
+      "aspect": "Internet & Wi-Fi",
+      "sentences": 459,
+      "count_pos": 0.3399,
+      "corrected_pos": 0.3859,
+      "corrected_neg": 0.6141,
+      "mean_star": 3.2603
+    },
+    {
+      "aspect": "Restauration",
+      "sentences": 3792,
+      "count_pos": 0.4873,
+      "corrected_pos": 0.5225,
+      "corrected_neg": 0.2158,
+      "mean_star": 3.6456
+    },
+    {
+      "aspect": "Service",
+      "sentences": 2642,
+      "count_pos": 0.4833,
+      "corrected_pos": 0.5454,
+      "corrected_neg": 0.4546,
+      "mean_star": 3.4985
+    },
+    {
+      "aspect": "Localisation",
+      "sentences": 4500,
+      "count_pos": 0.6147,
+      "corrected_pos": 0.6727,
+      "corrected_neg": 0.0,
+      "mean_star": 3.694
+    },
+    {
+      "aspect": "Équipements & Activités",
+      "sentences": 2096,
+      "count_pos": 0.5649,
+      "corrected_pos": 0.6829,
+      "corrected_neg": 0.2228,
+      "mean_star": 3.6632
+    },
+    {
+      "aspect": "Personnel",
+      "sentences": 4527,
+      "count_pos": 0.6457,
+      "corrected_pos": 0.7523,
+      "corrected_neg": 0.2477,
+      "mean_star": 3.7501
+    },
+    {
+      "aspect": "Expérience & Valeur",
+      "sentences": 1538,
+      "count_pos": 0.6892,
+      "corrected_pos": 0.7835,
+      "corrected_neg": 0.2165,
+      "mean_star": 4.0085
+    }
+  ]
+}

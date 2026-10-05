@@ -1,0 +1,39 @@
+{
+  "model_repo": "D:\\NLP Analyse de sentiment\\data_en\\model_en.joblib",
+  "revision": "en-tfidf-3class-v1",
+  "backend": "sklearn",
+  "labels": [
+    "negative",
+    "neutral",
+    "positive"
+  ],
+  "class_order": [
+    "negative",
+    "neutral",
+    "positive"
+  ],
+  "max_length": 0,
+  "normalize_version": "v1",
+  "temperature": 0.7347,
+  "confusion_matrix": [
+    [
+      0.69281,
+      0.292308,
+      0.082237
+    ],
+    [
+      0.248366,
+      0.430769,
+      0.148026
+    ],
+    [
+      0.058824,
+      0.276923,
+      0.769737
+    ]
+  ],
+  "rejected_alternative": {
+    "name": "binary + fitted band",
+    "holdout_macro_f1": 0.5875
+  }
+}
