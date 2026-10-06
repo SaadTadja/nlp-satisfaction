@@ -181,8 +181,9 @@ with gr.Blocks(title="Hotel Satisfaction Analysis") as demo:
         gr.Markdown(
             "Upload a CSV with a `text` column (or `review`, `comment`, "
             f"`feedback`, `phrase`). Up to {MAX_ROWS:,} rows.\n\n"
-            "Try `data_en/reviews_test.csv` — it has real star ratings, so you "
-            "can check the estimate against a known answer."
+            "**Try `data_en/example_reviews.csv`** — 1,286 held-out reviews. "
+            "Their true satisfied share is **51.9%**, so you can check the "
+            "estimate against a known answer."
         )
         f_in = gr.File(label="CSV file", file_types=[".csv"])
         btn = gr.Button("Analyse", variant="primary")
