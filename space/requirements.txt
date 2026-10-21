@@ -1,21 +1,25 @@
 # Hugging Face Space requirements (§2.6)
 #
-# CPU-only torch wheel: the default `torch` pulls ~2.5 GB of CUDA libraries
-# that never execute on a CPU Space, inflating the image and slowing cold
-# starts badly.
---extra-index-url https://download.pytorch.org/whl/cpu
-
+# Both demos (app.py, app_en.py) serve the scikit-learn TF-IDF backbone, so the
+# Space needs only these. Versions match the root requirements.txt, which is
+# what the models were trained and measured with -- a joblib pickle loaded
+# under a different scikit-learn version can fail or silently change outputs.
+#
 # Pin EXACTLY. Spaces track Gradio's default version, and major versions have
 # changed component APIs -- an unpinned app breaks on its own, months after
 # you stop touching it, which is the worst possible time.
-torch==2.5.1+cpu
-transformers==4.46.3
-gradio==5.9.1
-sentencepiece==0.2.0
-protobuf==5.29.1
-numpy==2.1.3
-pandas==2.2.3
+numpy==2.4.6
+scipy==1.17.1
+scikit-learn==1.8.0
+joblib==1.5.3
+pandas==2.3.3
+gradio==6.29.1
 
-# Replace every version above with what actually resolved on Kaggle during
-# development (§2.3). The values here are placeholders chosen to be internally
-# consistent, not verified against your run.
+# --- only when inference_config.json switches to backend: "transformer" ---
+# Use the CPU-only torch wheel: the default pulls ~2.5 GB of CUDA libraries
+# that never execute on a CPU Space.
+# --extra-index-url https://download.pytorch.org/whl/cpu
+# torch==<version>+cpu
+# transformers==5.18.0
+# sentencepiece==0.2.2
+# protobuf==6.33.6

@@ -9,7 +9,7 @@
 #   Trainer(tokenizer=)                     -> processing_class=
 # And the dataset id needs its namespace: "tblard/allocine", not "allocine".
 
-# --- core: the served pipeline and all 57 tests run on these alone ---
+# --- core: the served pipeline and all 72 tests run on these alone ---
 numpy==2.4.6
 scikit-learn==1.8.0
 scipy==1.17.1

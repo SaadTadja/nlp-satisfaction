@@ -197,3 +197,26 @@ def test_partial_config_refuses_to_aggregate(tmp_path):
 
 def test_full_config_is_aggregation_ready(tmp_path):
     assert load_config(write_config(tmp_path)).aggregation_ready is True
+
+
+# --------------------------------------------------------------------------
+# Portable artifact paths
+# --------------------------------------------------------------------------
+
+
+def test_relative_model_path_resolves_against_the_config_folder(tmp_path):
+    (tmp_path / "data").mkdir()
+    (tmp_path / "data" / "m.joblib").write_bytes(b"")
+    cfg = load_config(write_config(tmp_path, model_repo="data/m.joblib"))
+    assert Path(cfg.model_repo) == tmp_path / "data" / "m.joblib"
+
+
+def test_hub_repo_id_is_left_untouched(tmp_path):
+    cfg = load_config(write_config(tmp_path))
+    assert cfg.model_repo == "you/camembert-satisfaction-fr"
+
+
+def test_shipped_configs_point_at_files_in_this_clone():
+    repo = Path(__file__).resolve().parents[1]
+    for name in ("inference_config.json", "inference_config_en.json"):
+        assert Path(load_config(repo / name).model_repo).is_file(), name

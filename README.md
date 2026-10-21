@@ -2,7 +2,7 @@
 
 Estimate **how satisfied clients are** from their written French feedback — with an honest error bar — and identify **what they are unsatisfied about**.
 
-> **Status: v1 complete and measured on the held-out test split.** Every phase from data audit to running demo is executed. The backbone is **TF-IDF + LogisticRegression**, not a transformer — CamemBERT needs a GPU and is a drop-in swap (see [Swapping the backbone](#swapping-the-backbone)), which would be v2 with its own disclosed evaluation.
+> **Status: v1 complete and measured on the held-out test split.** An English hotel-review track (3 classes) was added afterwards — see [English track](#english-track-hotel-reviews). Every phase from data audit to running demo is executed. The backbone is **TF-IDF + LogisticRegression**, not a transformer — CamemBERT needs a GPU and is a drop-in swap (see [Swapping the backbone](#swapping-the-backbone)), which would be v2 with its own disclosed evaluation.
 
 ---
 
@@ -113,8 +113,8 @@ The test split was held back through every phase and read by exactly one noteboo
 
 | Slice | n | Accuracy | Macro-F1 |
 |---|---|---|---|
-| Test, forced choice | 20,000 | 0.9201 | 0.9195 |
-| Test, deduplicated | 19,961 | 0.9199 | 0.9194 |
+| Test, forced choice | 20,000 | 0.9202 | 0.9196 |
+| Test, deduplicated | 19,961 | 0.9200 | 0.9194 |
 | Test, confident only | 18,079 | **0.9612** | **0.9611** |
 | Test, dedup + confident | 18,041 | 0.9611 | 0.9610 |
 
@@ -129,7 +129,7 @@ Validation was 0.9286 macro-F1, so the honest generalisation gap is **0.9 points
 | | Validation | Test |
 |---|---|---|
 | Accuracy outside band | 0.9610 | 0.9612 |
-| Accuracy inside band | 0.6310 | **0.5336** |
+| Accuracy inside band | 0.6310 | **0.5341** |
 
 Inside the band the model is at **coin-flip accuracy on 9.6% of reviews**. It is not discarding good predictions; it is declining to guess on cases it genuinely cannot read. That is the clearest validation of the §4.1 polarity-hole finding in the whole project.
 
@@ -142,7 +142,7 @@ Inside the band the model is at **coin-flip accuracy on 9.6% of reviews**. It is
 | Improvement | 3.3× | **10.5×** |
 | CI coverage | — | **9 / 9** |
 
-Nine prevalence levels from 10% to 90%; every reported interval contained the true rate. Constants fitted on one sample de-bias a different one — which is the whole claim, tested where it counts.
+Nine prevalence levels from 10% to 90%; every reported interval contained the true rate. The interval bootstraps `TPR`/`FPR` from the frozen validation holdout — an earlier version of this cell drew them from the test labels instead, which was corrected on 2026-10-21 (coverage stayed 9/9). Constants fitted on one sample de-bias a different one — which is the whole claim, tested where it counts.
 
 ![CC vs ACC on test](data/fig_test_cc_vs_acc.png)
 
@@ -193,6 +193,29 @@ Only **40.1%** of sentences contain a lexicon term, so **59.9% are invisible** t
 
 ---
 
+## English track: hotel reviews
+
+A second track on **real customer feedback**: 5,872 English reviews of 15 Ibis hotels in Morocco (Booking, Expedia, TripAdvisor), labelled **negative / neutral / positive** from star ratings (<3 / 3–3.5 / >3.5). Notebooks `10`–`15`, demo `space/app_en.py`, config `inference_config_en.json`.
+
+| | Accuracy | Macro-F1 |
+|---|---|---|
+| Majority class | 0.5187 | 0.2277 |
+| Sentiment labels shipped with the dataset | 0.6167 | 0.5336 |
+| Binary model + fitted neutral band | 0.6337 | 0.5875 |
+| **Direct 3-class TF-IDF** ← *served for batch estimates* | **0.6746** | **0.6258** |
+
+Holdout split (n=587). The neutral class is the hard one (F1 0.42): 3-star reviews are mostly *mixed* — strong praise and strong complaint in one text — not neutral language.
+
+**The correction, multiclass.** With three classes, Adjusted Classify and Count becomes a linear solve, `p̂ = M·p`, using the holdout confusion matrix `M` (condition number 4.5). Across five resampled class mixes, error drops from **0.074 to 0.017 MAE (4.5×)**. On the 1,175-review test split the corrected satisfied share is **54.7% [45.3–62.1%] against a true 51.8%**; naive counting says 46.9%.
+
+**Two models, two units.** The review-level model learned star-rating correlations from fragmentary text and misreads clean standalone sentences (probe 6/8). A second model trained on sentences (probe 7/8) drives the single-review tab. It is temperature-scaled (T = 0.62, fitted on calib sentences) and drives the aspect layer below; it never produces a corrected review-level estimate, because its matrices are measured against machine sentence labels.
+
+**Aspects** use the dataset's own 11 topic assignments (BERTopic/cosine, machine-made) and are scored entirely at sentence level: the **sentence model** classifies each sentence, and ACC corrects each aspect with **its own sentence-level confusion matrix**, measured on the calib+hold review sentences (20 pseudo-counts per column toward the pooled matrix). A single pooled matrix was tested and rejected: on the unseen test-review sentences it *raised* the mean error against the sentence labels from 0.053 (raw counting) to 0.093, because the model's error rates differ by topic; per-aspect matrices cut it to **0.038**. Headline numbers are on the 6,864 test-review sentences, with bootstrap intervals that also resample the matrix: from *Bruit & sommeil* at **9.6% [2.2–17.8%]** satisfied to *Expérience & valeur* at **85.9% [78.4–93.6%]**; no aspect needs simplex projection, so the earlier 0% / 100% artefacts are gone. Corrected satisfaction still ranks with the mean star rating of the reviews mentioning each aspect (**Spearman 0.755, p = 0.007** over 11 aspects; raw counts 0.709). **Limitation:** there are no human sentence labels — the reference for the matrices is the dataset's machine sentence labels (~83% agreement with the model, accuracy unknown), so the correction removes the model's bias *relative to that labeller*, not the labeller's own. The star-rating check is the independent one. The previous 0.955 came from running the review model on sentences with the review-level matrix, a unit mismatch.
+
+**Limitations:** one hotel chain in one country; text is fragmentary (sentences matching no topic were dropped upstream, median 31 words); bag-of-n-grams cannot scope negation (*"could not have been better"* reads negative). The raw source file is not in the repo, so notebooks `10` and `15` cannot be re-run from a clone (`14` runs from the committed `data_en/sentences.csv`) — see [INSTALL.md](INSTALL.md#6-run-the-notebooks-optional).
+
+---
+
 ## Swapping the backbone
 
 [`src/predict.py`](src/predict.py) defines the pipeline once and takes the encoder as a **backend**. `SklearnBackend` and `TransformerBackend` expose the same one-method interface; normalisation, temperature, the neutral band and the correction are shared code.
@@ -215,7 +238,7 @@ src/
   estimate.py       ACC prevalence correction + bootstrap CI     (§10)  ← centerpiece
   aspects.py        lexicons + sentence-level attribution        (§11)
   predict.py        the single prediction path, swappable backend (§3.1)
-tests/              57 tests, no GPU required, ~4 s
+tests/              72 tests, no GPU required, ~5 s
 notebooks/
   00_audit.ipynb        data audit                      ✅ executed
   01_baselines.ipynb    majority / TF-IDF / asymmetry   ✅ executed
@@ -225,8 +248,10 @@ notebooks/
   07_aspects.ipynb      derived lexicons + breakdown    ✅ executed
   03_xlmr_seeds         3 seeds × 2 models              ⏳ GPU
   05_real_feedback      300 hand-laballed comments      ⏳ needs you
-  08_final_test         THE ONLY notebook touching test ⏳ last
-space/app.py        Gradio demo: a report, not a label  ✅ smoke-tested
+  08_final_test         THE ONLY notebook touching test ✅ executed
+  10–15_en_*            English hotel track             ✅ executed
+space/app.py        Gradio demo (French)                ✅ runs locally
+space/app_en.py     Gradio demo (English)               ✅ runs locally
 inference_config.json  T, thresholds, TPR/FPR, revision — complete
 ```
 
@@ -239,19 +264,45 @@ inference_config.json  T, thresholds, TPR/FPR, revision — complete
 
 ## Setup
 
+Needs **Python 3.14** (the pins in `requirements.txt` are exact and were captured on 3.14.5; older interpreters may find no wheels) and Git. No GPU, Docker, torch or Hugging Face account: both served models are small scikit-learn files committed to the repo.
+
+```bash
+git clone https://github.com/SaadTadja/nlp-satisfaction.git
+```
+
+```bash
+cd nlp-satisfaction
+```
+
+```bash
+python -m venv .venv
+```
+
+Activate it: `.venv\Scripts\Activate.ps1` (Windows PowerShell) or `source .venv/bin/activate` (macOS/Linux). Then install (~10 minutes, gradio/transformers/datasets are large):
+
 ```bash
 python -m pip install -r requirements.txt
 ```
+
+Check the install. Expected: `72 passed` in a few seconds.
 
 ```bash
 python -m pytest tests/ -q
 ```
 
+Run a demo, then open **http://127.0.0.1:7860**. French film reviews:
+
 ```bash
 python space/app.py
 ```
 
-The pure-numpy modules (`normalize`, `estimate`, `aspects`) and all 57 tests run without torch.
+English hotel reviews:
+
+```bash
+python space/app_en.py
+```
+
+Things to try in each app, running both at once, the notebooks and troubleshooting: **[INSTALL.md](INSTALL.md)**.
 
 ---
 
@@ -262,7 +313,6 @@ The pure-numpy modules (`normalize`, `estimate`, `aspects`) and all 57 tests run
 | CamemBERT / XLM-R / zero-shot / nlptown | GPU — Kaggle T4, ~4 h. Would be **v2** |
 | 300 hand-labelled real comments (§6) | **You.** The phase's value comes from *you* labelling blind with a second annotator; if it were auto-labelled the κ figure would be meaningless |
 | Re-fit the neutral band on 3-class labels | Depends on the above — current thresholds are set by target abstention rate and are **provisional** |
-| Final test-set run | Last, once everything else is frozen |
 | Public Space deployment | Your Hugging Face account |
 
 ## Limitations
