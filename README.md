@@ -264,21 +264,45 @@ inference_config.json  T, thresholds, TPR/FPR, revision — complete
 
 ## Setup
 
+Needs **Python 3.14** (the pins in `requirements.txt` are exact and were captured on 3.14.5; older interpreters may find no wheels) and Git. No GPU, Docker, torch or Hugging Face account: both served models are small scikit-learn files committed to the repo.
+
+```bash
+git clone https://github.com/SaadTadja/nlp-satisfaction.git
+```
+
+```bash
+cd nlp-satisfaction
+```
+
+```bash
+python -m venv .venv
+```
+
+Activate it: `.venv\Scripts\Activate.ps1` (Windows PowerShell) or `source .venv/bin/activate` (macOS/Linux). Then install (~10 minutes, gradio/transformers/datasets are large):
+
 ```bash
 python -m pip install -r requirements.txt
 ```
+
+Check the install. Expected: `72 passed` in a few seconds.
 
 ```bash
 python -m pytest tests/ -q
 ```
 
+Run a demo, then open **http://127.0.0.1:7860**. French film reviews:
+
 ```bash
 python space/app.py
 ```
 
-The pure-numpy modules (`normalize`, `estimate`, `aspects`) and all 72 tests run without torch.
+English hotel reviews:
 
-**Full step-by-step guide, including the English demo, notebooks and troubleshooting: [INSTALL.md](INSTALL.md).**
+```bash
+python space/app_en.py
+```
+
+Things to try in each app, running both at once, the notebooks and troubleshooting: **[INSTALL.md](INSTALL.md)**.
 
 ---
 
