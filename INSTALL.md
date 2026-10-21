@@ -151,7 +151,7 @@ python -m jupyter notebook notebooks/
 | `00`–`08` (French) | `tblard/allocine`, downloaded automatically from the Hugging Face Hub on first run (~200k reviews) | An "unauthenticated requests" warning is harmless. Run in order `00 → 01 → 02 → 04 → 06 → 07`. |
 | `08_final_test` | same | The only notebook that reads the test split. Re-running it is a new look at test — read its header first. |
 | `11`–`13` (English) | the CSVs already in `data_en/` | Run as-is. |
-| `10`, `14`, `15` (English) | `dataset for training in ENGLISH/df_final_absa_v4.csv` | **Not in the repo** (233 MB, git-ignored). Without it these three cannot be re-run; their committed outputs and the CSVs they produced in `data_en/` are what the apps use. |
+| `10`, `15` (English) | `dataset for training in ENGLISH/df_final_absa_v4.csv` | **Not in the repo** (233 MB, git-ignored). Without it these two cannot be re-run (`14` reads the committed `data_en/sentences.csv` and only uses the raw file, if present, for one provenance line); their committed outputs and the CSVs they produced in `data_en/` are what the apps use. |
 
 Notebooks `02` and `12` retrain and overwrite the served models. If you re-run
 them, re-run the calibration and aggregate notebooks after them too (`04`,

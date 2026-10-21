@@ -49,14 +49,15 @@ try:
     REVIEW_MODEL = SatisfactionModel(CFG)
 
     raw = json.loads((REPO / "inference_config_en.json").read_text(encoding="utf-8"))
-    # The sentence model is not temperature-scaled and has no confusion matrix
-    # of its own -- CFG's was measured for the *review* model. It therefore
-    # predicts but is never allowed to aggregate.
+    # The sentence model's temperature and sentence-level confusion matrices
+    # come from notebook 14, but those matrices are measured against machine
+    # sentence labels, not human ones, and CFG's matrix belongs to the *review*
+    # model. So it predicts (calibrated) but is never allowed to aggregate.
     scfg = InferenceConfig(
         model_repo=resolve_artifact(raw["sentence_model_repo"]),
         revision="en-sentence-v1",
         labels=LABELS, normalize_version=raw["normalize_version"],
-        temperature=1.0, mode="multiclass", backend="sklearn",
+        temperature=float(raw.get("sentence_temperature", 1.0)), mode="multiclass", backend="sklearn",
         class_order=raw["sentence_class_order"],
         confusion_matrix=None, aggregation_ready=False,
     )
@@ -196,7 +197,7 @@ with gr.Blocks(title="Hotel Satisfaction Analysis") as demo:
         t_in = gr.Textbox(label="Review", lines=4,
                           placeholder="Paste a hotel review in English…")
         t_btn = gr.Button("Analyse", variant="primary")
-        t_scores = gr.Label(label="Probabilities (sentence model, not temperature-scaled)")
+        t_scores = gr.Label(label="Probabilities (sentence model, temperature-scaled)")
         t_notes = gr.Markdown()
         t_btn.click(analyse_one, t_in, [t_scores, t_notes])
         gr.Examples([
