@@ -1,5 +1,5 @@
 {
-  "model_repo": "D:\\NLP Analyse de sentiment\\data\\model_tfidf.joblib",
+  "model_repo": "data/model_tfidf.joblib",
   "revision": "local-tfidf-v1",
   "labels": [
     "négatif",

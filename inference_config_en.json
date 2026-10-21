@@ -1,5 +1,5 @@
 {
-  "model_repo": "D:\\NLP Analyse de sentiment\\data_en\\model_en.joblib",
+  "model_repo": "data_en/model_en.joblib",
   "revision": "en-tfidf-3class-v1",
   "backend": "sklearn",
   "labels": [
@@ -36,7 +36,7 @@
     "name": "binary + fitted band",
     "holdout_macro_f1": 0.5875
   },
-  "sentence_model_repo": "D:\\NLP Analyse de sentiment\\data_en\\model_en_sentence.joblib",
+  "sentence_model_repo": "data_en/model_en_sentence.joblib",
   "sentence_class_order": [
     "negative",
     "neutral",

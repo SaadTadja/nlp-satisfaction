@@ -27,15 +27,15 @@ import sys
 from pathlib import Path
 
 import gradio as gr
-import numpy as np
 import pandas as pd
 
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
 
-from src.estimate import acc_prevalence_multiclass, predicted_distribution  # noqa: E402
 from src.normalize import is_empty  # noqa: E402
-from src.predict import InferenceConfig, SatisfactionModel, load_config  # noqa: E402
+from src.predict import (  # noqa: E402
+    InferenceConfig, SatisfactionModel, load_config, resolve_artifact,
+)
 
 MAX_ROWS = 5_000
 LABELS = ["negative", "neutral", "positive"]
@@ -49,12 +49,16 @@ try:
     REVIEW_MODEL = SatisfactionModel(CFG)
 
     raw = json.loads((REPO / "inference_config_en.json").read_text(encoding="utf-8"))
+    # The sentence model is not temperature-scaled and has no confusion matrix
+    # of its own -- CFG's was measured for the *review* model. It therefore
+    # predicts but is never allowed to aggregate.
     scfg = InferenceConfig(
-        model_repo=raw["sentence_model_repo"], revision="en-sentence-v1",
+        model_repo=resolve_artifact(raw["sentence_model_repo"]),
+        revision="en-sentence-v1",
         labels=LABELS, normalize_version=raw["normalize_version"],
         temperature=1.0, mode="multiclass", backend="sklearn",
         class_order=raw["sentence_class_order"],
-        confusion_matrix=CFG.confusion_matrix, aggregation_ready=True,
+        confusion_matrix=None, aggregation_ready=False,
     )
     scfg.validate()
     SENTENCE_MODEL = SatisfactionModel(scfg)
@@ -133,17 +137,12 @@ def analyse_batch(file):
     if not texts:
         return "No usable text in that file.", None, None
 
-    preds = REVIEW_MODEL.predict(texts, batch_size=256)
-    labs = np.array([p.label for p in preds])
-    naive = predicted_distribution(labs, LABELS)
-    corrected = acc_prevalence_multiclass(naive, CFG.confusion_matrix)
-
-    _, dist, lo, hi, _ = REVIEW_MODEL.estimate_distribution(texts, n_boot=600)
+    _, dist, lo, hi, naive = REVIEW_MODEL.estimate_distribution(texts, n_boot=600)
     i = LABELS.index("positive")
     summary = (
         f"## {dist[i]:.0%} satisfied\n\n"
         f"**95% interval: {lo[i]:.0%} – {hi[i]:.0%}**\n\n"
-        f"- Reviews analysed: **{len(preds):,}**\n"
+        f"- Reviews analysed: **{len(texts):,}**\n"
         f"- Raw count, uncorrected: {naive[i]:.0%} "
         f"— the correction moved it by {abs(dist[i]-naive[i])*100:.1f} points\n\n"
         f"> Counting predictions is biased whenever the classifier's errors are "
@@ -155,7 +154,7 @@ def analyse_batch(file):
     breakdown = pd.DataFrame({
         "label": [PRETTY[l] for l in LABELS],
         "counted": [f"{v:.0%}" for v in naive],
-        "corrected": [f"{v:.0%}" for v in corrected],
+        "corrected": [f"{v:.0%}" for v in dist],
         "95% interval": [f"{lo[k]:.0%} – {hi[k]:.0%}" for k in range(3)],
     })
 
@@ -181,9 +180,10 @@ with gr.Blocks(title="Hotel Satisfaction Analysis") as demo:
         gr.Markdown(
             "Upload a CSV with a `text` column (or `review`, `comment`, "
             f"`feedback`, `phrase`). Up to {MAX_ROWS:,} rows.\n\n"
-            "**Try `data_en/example_reviews.csv`** — 1,286 held-out reviews. "
-            "Their true satisfied share is **51.9%**, so you can check the "
-            "estimate against a known answer."
+            "**Try `data_en/example_reviews.csv`** — 1,175 test-split reviews "
+            "the review model never saw in training or calibration. Their true "
+            "satisfied share is **51.8%**, so you can check the estimate "
+            "against a known answer."
         )
         f_in = gr.File(label="CSV file", file_types=[".csv"])
         btn = gr.Button("Analyse", variant="primary")
@@ -196,7 +196,7 @@ with gr.Blocks(title="Hotel Satisfaction Analysis") as demo:
         t_in = gr.Textbox(label="Review", lines=4,
                           placeholder="Paste a hotel review in English…")
         t_btn = gr.Button("Analyse", variant="primary")
-        t_scores = gr.Label(label="Calibrated probabilities")
+        t_scores = gr.Label(label="Probabilities (sentence model, not temperature-scaled)")
         t_notes = gr.Markdown()
         t_btn.click(analyse_one, t_in, [t_scores, t_notes])
         gr.Examples([

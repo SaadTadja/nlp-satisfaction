@@ -7,7 +7,7 @@
 | **Backbone** | TF-IDF (word 1–2 grams + `char_wb` 3–5 grams) → LogisticRegression |
 | **Training data** | `tblard/allocine` — 40,000 stratified rows (seed 42) of 160,000 |
 | **Artifact size** | 8.5 MB |
-| **Evaluated** | 2026-10-05, test split, read once |
+| **Evaluated** | 2026-10-05, test split; re-read 2026-10-21 (see note below) |
 
 ---
 
@@ -38,12 +38,14 @@ The two outputs have very different reliability, and the distinction matters mor
 
 ## Performance
 
-Test split, 20,000 reviews, measured once with all parameters frozen.
+Test split, 20,000 reviews, all parameters frozen.
+
+> **Re-run note (2026-10-21).** The test notebook was re-executed once to correct how the interval-coverage check was measured. That re-run also showed the committed `model_tfidf.joblib` had been retrained (notebook 02 re-run on 2026-10-06) after the original test run, with near-identical weights. The figures below are from the re-run and describe the model that actually ships; they differ from the 2026-10-05 run by at most 0.0005.
 
 | Slice | n | Accuracy | Macro-F1 |
 |---|---|---|---|
-| Forced choice (every row) | 20,000 | 0.9201 | 0.9195 |
-| Deduplicated | 19,961 | 0.9199 | 0.9194 |
+| Forced choice (every row) | 20,000 | 0.9202 | 0.9196 |
+| Deduplicated | 19,961 | 0.9200 | 0.9194 |
 | Confident only (band applied) | 18,079 | 0.9612 | 0.9611 |
 
 Validation macro-F1 was 0.9286, so the generalisation gap is 0.9 points.
@@ -76,7 +78,7 @@ Temperature `T = 0.6268`. **Below 1**, meaning the raw model was *under*-confide
 | | Validation | Test |
 |---|---|---|
 | Accuracy outside band | 0.9610 | 0.9612 |
-| Accuracy inside band | 0.6310 | **0.5336** |
+| Accuracy inside band | 0.6310 | **0.5341** |
 
 Inside the band the model is at coin-flip accuracy. The band is not discarding good predictions; it declines to guess where the text genuinely does not resolve.
 
@@ -95,7 +97,7 @@ Counting positive predictions (*Classify and Count*) is biased whenever classifi
 | Improvement | 3.3× | **10.5×** |
 | CI coverage (9 levels) | — | **9 / 9** |
 
-Across true prevalences from 10% to 90%, every reported 95% interval contained the true rate. Naive counting reports a truly 10%-satisfied population as roughly 14%.
+Across true prevalences from 10% to 90%, every reported 95% interval contained the true rate, with `TPR`/`FPR` uncertainty bootstrapped from the frozen validation holdout. Naive counting reports a truly 10%-satisfied population as roughly 14%.
 
 ### Aspect breakdown
 
@@ -127,7 +129,7 @@ Audited before use ([`00_audit`](notebooks/00_audit.ipynb)):
 | Truncation at `max_length=288` | 9.8% |
 | Casing | 96.3% of reviews contain uppercase — normalisation preserves case |
 
-**Construction note.** Datasets built from star ratings usually drop the middle. Here the hole is in the **ratings**, not the **language**: both classes contain measured, mixed, lukewarm writing (*"Exercice de style intéressant mais fastidieux"* is labelled negative). This is why the abstention band works — the model is genuinely uncertain on such text rather than confidently wrong, confirmed by the 0.5336 in-band accuracy above.
+**Construction note.** Datasets built from star ratings usually drop the middle. Here the hole is in the **ratings**, not the **language**: both classes contain measured, mixed, lukewarm writing (*"Exercice de style intéressant mais fastidieux"* is labelled negative). This is why the abstention band works — the model is genuinely uncertain on such text rather than confidently wrong, confirmed by the 0.5341 in-band accuracy above.
 
 ---
 
@@ -142,7 +144,7 @@ Concretely, two things degrade off-domain, and the second is worse than the firs
 
 Closing this requires ~150–300 hand-labelled French product/service comments with 3-class labels. It cannot be auto-generated: labelling with a model would make any agreement figure measure agreement with the system under test.
 
-**2. Truncation.** 9.8% of reviews exceed `max_length=288` and are cut. Review sentiment often lands in the final sentence, so this is not a neutral loss.
+**2. Truncation — applies to a transformer backbone, not to v1.** The TF-IDF model reads every review in full; `max_length=288` is only enforced by the transformer backend. For CamemBERT, 9.8% of reviews would exceed it and be cut, and review sentiment often lands in the final sentence, so that would not be a neutral loss.
 
 **3. Aspect detection is lexicon-based.** 59.9% of sentences contain no lexicon term and are invisible to the method. No implicit aspects, no dependency parsing; a sentence mentioning two aspects is attributed to both with the same sentiment. The lexicons are film-specific and must be rebuilt for another corpus.
 
@@ -173,7 +175,7 @@ python -m pip install -r requirements.txt
 python -m pytest tests/ -q
 ```
 
-57 tests, ~4 seconds, no GPU and no torch required. Notebooks run in order `00 → 01 → 02 → 04 → 06 → 07`, with `08_final_test` last and once.
+72 tests, ~5 seconds, no GPU and no torch required. Notebooks run in order `00 → 01 → 02 → 04 → 06 → 07`, with `08_final_test` last and once.
 
 Environment pinned in [`requirements.txt`](requirements.txt); full freeze in `requirements-full.txt`. Python 3.14.5, scikit-learn 1.8.0, numpy 2.4.6.
 

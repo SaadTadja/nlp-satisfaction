@@ -46,6 +46,7 @@ __all__ = [
     "Prediction",
     "InferenceConfig",
     "load_config",
+    "resolve_artifact",
     "apply_temperature",
     "label_from_prob",
     "SklearnBackend",
@@ -54,7 +55,23 @@ __all__ = [
     "estimate_with_ci",
 ]
 
-CONFIG_PATH = Path(__file__).resolve().parents[1] / "inference_config.json"
+REPO_ROOT = Path(__file__).resolve().parents[1]
+CONFIG_PATH = REPO_ROOT / "inference_config.json"
+
+
+def resolve_artifact(ref: str, base: str | Path | None = None) -> str:
+    """Resolve a model reference stored in a config.
+
+    Local artifacts are stored **relative to the repo root** so a clone works
+    from any folder. A reference that does not exist on disk under the base is
+    returned unchanged -- it is then a Hub repo id (``user/model``), which the
+    transformer backend resolves itself.
+    """
+    p = Path(ref)
+    if p.is_absolute():
+        return str(p)
+    local = Path(base or REPO_ROOT) / p
+    return str(local) if local.exists() else ref
 
 NEGATIVE, NEUTRAL, POSITIVE = "négatif", "neutre", "positif"
 
@@ -190,7 +207,7 @@ def load_config(
     has_agg = all(raw.get(k) is not None for k in agg_fields)
     M = raw.get("confusion_matrix")
     cfg = InferenceConfig(
-        model_repo=raw["model_repo"],
+        model_repo=resolve_artifact(raw["model_repo"], Path(path).resolve().parent),
         revision=raw["revision"],
         labels=labels,
         normalize_version=raw["normalize_version"],
@@ -383,7 +400,9 @@ class SatisfactionModel:
 
     # -- aggregation -------------------------------------------------------
     def estimate_satisfaction(self, texts, batch_size: int = 64,
-                              n_boot: int = 1500) -> SatisfactionEstimate:
+                              n_boot: int = 1500,
+                              preds: list[Prediction] | None = None
+                              ) -> SatisfactionEstimate:
         """Bias-corrected share of satisfied customers (§10).
 
         Binary mode excludes abstentions from the base: the question is what
@@ -393,13 +412,17 @@ class SatisfactionModel:
         Multiclass mode keeps the whole population, because neutral is a real
         class with its own column in the confusion matrix. The returned rate is
         the positive share; use :meth:`estimate_distribution` for all three.
+
+        Pass ``preds`` (the output of :meth:`predict` on the same ``texts``) to
+        skip predicting twice when the caller already has them.
         """
         if not self.cfg.aggregation_ready:
             raise ValueError(
                 "correction parameters are not measured yet. Run "
                 "notebooks/06_aggregate (binary) or 13_en_aggregate (multiclass)."
             )
-        preds = self.predict(texts, batch_size=batch_size)
+        if preds is None:
+            preds = self.predict(texts, batch_size=batch_size)
 
         if self.cfg.mode == "multiclass":
             dist, lo, hi = self._estimate_distribution(preds, n_boot)

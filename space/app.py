@@ -137,7 +137,7 @@ def analyse_batch(file):
     if not decided:
         return "Tous les commentaires tombent dans la bande neutre.", None, None
 
-    est = MODEL.estimate_satisfaction(texts)
+    est = MODEL.estimate_satisfaction(texts, preds=preds)
     summary = (
         f"## {est.rate:.0%} de clients satisfaits\n\n"
         f"**Intervalle de confiance 95 % : {est.ci_low:.0%} – {est.ci_high:.0%}**\n\n"

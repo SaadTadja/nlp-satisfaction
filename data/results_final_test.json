@@ -1,12 +1,12 @@
 {
   "test (raw, forced choice)": {
     "n": 20000,
-    "accuracy": 0.9201,
-    "macro_f1": 0.9195
+    "accuracy": 0.9202,
+    "macro_f1": 0.9196
   },
   "test (deduplicated, forced)": {
     "n": 19961,
-    "accuracy": 0.9199,
+    "accuracy": 0.92,
     "macro_f1": 0.9194
   },
   "test (confident only)": {
@@ -21,7 +21,7 @@
   },
   "band": {
     "acc_outside": 0.9612,
-    "acc_inside": 0.5336,
+    "acc_inside": 0.5341,
     "abstain_rate": 0.096
   },
   "aggregate": {
